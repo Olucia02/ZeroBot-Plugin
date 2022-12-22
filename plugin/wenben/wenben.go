@@ -21,6 +21,9 @@ const (
 	kouling = "http://ovooa.com/API/rao/api.php?type=text"      // 口令
 	tang    = "http://api.btstu.cn/yan/api.php?charset=utf-8&encode=text"
 	qing    = "https://xiaobai.klizi.cn/API/other/wtqh.php"
+	//	quan    = "http://tfkapi.top/API/qqqz.php?qq=%v"
+	lishi = "http://ovooa.com/API/lishi/api.php?n=%v"
+	ping  = "http://tfapi.top/API/sping.php?url=%v"
 )
 
 type rspData struct {
@@ -109,5 +112,38 @@ func init() { // 主函数
 			msg.WriteString(rsp.FromWho)
 		}
 		ctx.SendChain(message.Text(msg.String()))
+	})
+	/*en.OnRegex(`^权重查询\s*(\[CQ:at,qq=)?(\d+)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		str := ctx.State["regex_matched"].([]string)[2]
+		if str == "" {
+			str = strconv.FormatInt(ctx.Event.UserID, 10)
+		}
+		es, err := web.GetData(fmt.Sprintf(quan, str)) // 将网站返回结果赋值
+		if err != nil {
+			ctx.SendChain(message.Text("出现错误捏：", err))
+			return
+		}
+		ctx.SendChain(message.Text(str, helper.BytesToString(es))) // 输出提取后的结果
+	})*/
+	en.OnRegex(`^历史上的今天\s?(\S{0,25})$`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		str := ctx.State["regex_matched"].([]string)[1]
+		if str == "" {
+			str = "10"
+		}
+		es, err := web.GetData(fmt.Sprintf(lishi, str)) // 将网站返回结果赋值
+		if err != nil {
+			ctx.SendChain(message.Text("出现错误捏：", err))
+			return
+		}
+		ctx.SendChain(message.Text(str, helper.BytesToString(es))) // 输出提取后的结果
+	})
+en.OnPrefix("ping").SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		str := ctx.State["args"].(string)
+		es, err := web.GetData(fmt.Sprintf(ping, str)) // 将网站返回结果赋值
+		if err != nil {
+			ctx.SendChain(message.Text("出现错误捏：", err))
+			return
+		}
+		ctx.SendChain(message.Text(helper.BytesToString(es)))
 	})
 }
