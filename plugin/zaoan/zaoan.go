@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	tu  = "https://iw233.cn/api.php?sort=pc"
+	tu  = "http://api.iw233.cn/api.php?sort=pc"
 	yan = "https://v1.hitokoto.cn/?c=k&encode=text"
 )
 
