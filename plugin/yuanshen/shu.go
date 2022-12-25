@@ -1,11 +1,15 @@
 package yuanshen // 导入yuan-shen模块
-import ()
+import (
+	"os"
+	"strconv"
+)
 
 const (
 // url = "https://enka.microgg.cn/u/%v/__data.json"
 )
 
-var Uidmap = map[int64]string{
+// Uidmap wifeid->wifename
+var Uidmap = map[int64]string{ //
 	10000036: "重云",
 	10000050: "托马",
 	10000051: "优菈",
@@ -73,6 +77,7 @@ var Uidmap = map[int64]string{
 	10000059: "鹿野院平藏",
 }
 
+// Namemap wifename->wifeid
 var Namemap = map[string]int64{
 	"多莉":    10000068,
 	"凯亚":    10000015,
@@ -141,6 +146,7 @@ var Namemap = map[string]int64{
 	"行秋":    10000025,
 }
 
+// Data 从网站获取的数据
 type Data struct {
 	PlayerInfo struct {
 		Nickname             string `json:"nickname"`
@@ -296,12 +302,14 @@ type Data struct {
 	UID string `json:"uid"`
 }
 
-func Getuid(qquid int64) (uid string) { //获取对应游戏uid
-	/*for _, r := range uidList {
-		if r.Qquid == qquid {
-			uid = r.UID
-			return
-		}
-	}*/
-	return ""
+// Getuid qquid->uid
+func Getuid(qquid int64) (uid int) { // 获取对应游戏uid
+	sqquid := strconv.Itoa(int(qquid))
+	// 获取本地缓存数据
+	txt, err := os.ReadFile("data/yuanshen/uid/" + sqquid + ".txt")
+	if err != nil {
+		return 0
+	}
+	sss, _ := strconv.Atoi(string(txt))
+	return sss
 }
