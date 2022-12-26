@@ -1,4 +1,4 @@
-package yuanshen // 导入yuan-shen模块
+package kokomi // 导入yuan-shen模块
 import (
 	"os"
 	"strconv"
@@ -146,6 +146,75 @@ var Namemap = map[string]int64{
 	"行秋":    10000025,
 }
 
+// Promap 角色id匹配属性
+var Promap = map[int64]string{
+	10000036: "冰",
+	10000050: "火",
+	10000051: "冰",
+	10000066: "水",
+	10000067: "草",
+	10000016: "火",
+	10000025: "水",
+	10000030: "岩",
+	10000053: "风",
+	10000071: "雷",
+	10000002: "冰",
+	10000003: "风",
+	10000005: "风", // 空
+	10000068: "雷",
+	10000070: "水",
+	10000072: "水",
+	10000001: "风", // 凯特
+	10000055: "岩",
+	10000060: "水",
+	10000023: "火",
+	10000042: "雷",
+	10000039: "冰",
+	10000057: "岩",
+	10000069: "草",
+	10000075: "风",
+	10000078: "草",
+	10000006: "雷",
+	10000014: "水",
+	10000049: "火",
+	10000056: "雷",
+	10000058: "雷",
+	10000065: "雷",
+	10000044: "火",
+	10000047: "风",
+	10000046: "火",
+	10000048: "火",
+	10000063: "冰",
+	10000076: "风",
+	10000015: "冰",
+	10000020: "雷",
+	10000074: "冰",
+	10000022: "风",
+	10000064: "岩",
+	10000034: "岩",
+	10000077: "草",
+	10000021: "火",
+	10000033: "水",
+	10000043: "风",
+	10000029: "火",
+	10000045: "冰",
+	10000062: "冰",
+	10000035: "冰",
+	10000052: "雷",
+	10000031: "雷",
+	10000037: "冰",
+	10000038: "岩",
+	10000041: "水",
+	10000007: "风",
+	10000024: "雷",
+	10000054: "水",
+	10000026: "风",
+	10000027: "岩",
+	10000073: "草",
+	10000032: "火",
+	10000059: "风",
+}
+
 // Data 从网站获取的数据
 type Data struct {
 	PlayerInfo struct {
@@ -251,36 +320,17 @@ type Data struct {
 			Num3045 float64 `json:"3045"`
 			Num3046 float64 `json:"3046"`
 		} `json:"fightPropMap"`
-		SkillDepotID           int   `json:"skillDepotId"`
-		InherentProudSkillList []int `json:"inherentProudSkillList"`
-		SkillLevelMap          struct {
-			Num10461 int `json:"10461"`
-			Num10462 int `json:"10462"`
-			Num10463 int `json:"10463"`
-		} `json:"skillLevelMap"`
-		EquipList []struct {
+		SkillDepotID           int         `json:"skillDepotId"`
+		InherentProudSkillList []int       `json:"inherentProudSkillList"`
+		SkillLevelMap          map[int]int `json:"skillLevelMap"`
+		EquipList              []struct {
 			ItemID    int `json:"itemId"`
 			Reliquary struct {
 				Level            int   `json:"level"`
 				MainPropID       int   `json:"mainPropId"`
 				AppendPropIDList []int `json:"appendPropIdList"`
 			} `json:"reliquary,omitempty"`
-			Flat struct {
-				NameTextMapHash    string `json:"nameTextMapHash"`
-				SetNameTextMapHash string `json:"setNameTextMapHash"`
-				RankLevel          int    `json:"rankLevel"`
-				ReliquaryMainstat  struct {
-					MainPropID string  `json:"mainPropId"`
-					StatValue  float64 `json:"statValue"`
-				} `json:"reliquaryMainstat"`
-				ReliquarySubstats []struct {
-					AppendPropID string  `json:"appendPropId"`
-					StatValue    float64 `json:"statValue"`
-				} `json:"reliquarySubstats"`
-				ItemType  string `json:"itemType"`
-				Icon      string `json:"icon"`
-				EquipType string `json:"equipType"`
-			} `json:"flat"`
+			Flat   Flat `json:"flat"` //标记
 			Weapon struct {
 				Level        int `json:"level"`
 				PromoteLevel int `json:"promoteLevel"`
@@ -302,11 +352,37 @@ type Data struct {
 	UID string `json:"uid"`
 }
 
+// Flat详细数据
+type Flat struct {
+	// l10n
+	NameTextHash    string `json:"nameTextMapHash"`
+	SetNameTextHash string `json:"setNameTextMapHash,omitempty"`
+
+	// artifact
+	ReliquaryMainStat Stat   `json:"reliquaryMainstat,omitempty"`
+	ReliquarySubStats []Stat `json:"reliquarySubstats,omitempty"`
+	EquipType         string `json:"equipType,omitempty"`
+
+	// weapon
+	WeaponStat []Stat `json:"weaponStats,omitempty"`
+
+	RankLevel uint8  `json:"rankLevel"` // 3, 4 or 5
+	ItemType  string `json:"itemType"`  // ITEM_WEAPON or ITEM_RELIQUARY
+	Icon      string `json:"icon"`      // You can get the icon from https://enka.network/ui/{Icon}.png
+}
+
+// Stat 属性对
+type Stat struct {
+	MainPropId string  `json:"mainPropId,omitempty"`
+	SubPropId  string  `json:"appendPropId,omitempty"`
+	Value      float64 `json:"statValue"`
+}
+
 // Getuid qquid->uid
 func Getuid(qquid int64) (uid int) { // 获取对应游戏uid
 	sqquid := strconv.Itoa(int(qquid))
 	// 获取本地缓存数据
-	txt, err := os.ReadFile("data/yuanshen/uid/" + sqquid + ".txt")
+	txt, err := os.ReadFile("data/kokomi/uid/" + sqquid + ".txt")
 	if err != nil {
 		return 0
 	}
