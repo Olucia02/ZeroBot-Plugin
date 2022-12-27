@@ -389,3 +389,49 @@ func Getuid(qquid int64) (uid int) { // 获取对应游戏uid
 	sss, _ := strconv.Atoi(string(txt))
 	return sss
 }
+
+// 圣遗物词条简单描述
+func StoS(val string) string {
+	var vv string
+	switch val {
+	case "FIGHT_PROP_HP":
+		vv = "小生命"
+	case "FIGHT_PROP_HP_PERCENT":
+		vv = "大生命"
+	case "FIGHT_PROP_ATTACK":
+		vv = "小攻击"
+	case "FIGHT_PROP_ATTACK_PERCENT":
+		vv = "大攻击"
+	case "FIGHT_PROP_DEFENSE":
+		vv = "小防御"
+	case "FIGHT_PROP_DEFENSE_PERCENT":
+		vv = "大防御"
+	case "FIGHT_PROP_CRITICAL":
+		vv = "暴击率"
+	case "FIGHT_PROP_CRITICAL_HURT":
+		vv = "爆伤"
+	case "FIGHT_PROP_CHARGE_EFFICIENCY":
+		vv = "充能"
+	case "FIGHT_PROP_HEAL_ADD":
+		vv = "治疗"
+	case "FIGHT_PROP_ELEMENT_MASTERY":
+		vv = "精通"
+	case "FIGHT_PROP_PHYSICAL_ADD_HURT":
+		vv = "物伤"
+	case "FIGHT_PROP_FIRE_ADD_HURT":
+		vv = "火伤"
+	case "FIGHT_PROP_ELEC_ADD_HURT":
+		vv = "雷伤"
+	case "FIGHT_PROP_WATER_ADD_HURT":
+		vv = "水伤"
+	case "FIGHT_PROP_GRASS_ADD_HURT":
+		vv = "草伤"
+	case "FIGHT_PROP_WIND_ADD_HURT":
+		vv = "风伤"
+	case "FIGHT_PROP_ROCK_ADD_HURT":
+		vv = "岩伤"
+	case "FIGHT_PROP_ICE_ADD_HURT":
+		vv = "冰伤"
+	}
+	return vv
+}

@@ -28,9 +28,9 @@ func init() { // 主函数
 		DisableOnDefault: false,
 		Brief:            "原神相关功能",
 		Help: "命令大全,需要依次执行\n" +
-			"绑定......(uid)\n" +
-			"更新面板\n" +
-			"全部面板\n" +
+			"- 绑定......(uid)\n" +
+			"- 更新面板\n" +
+			"- 全部面板\n" +
 			"- XX面板",
 	})
 	en.OnSuffix("面板").SetBlock(true).Handle(func(ctx *zero.Ctx) {
@@ -135,12 +135,15 @@ func init() { // 主函数
 		dc.DrawImage(beijing, 0, 0)
 		dc.SetRGB(1, 1, 1) // 换白色
 		// 角色立绘565*935
-		lihui, err := gg.LoadImage("data/kokomi/lihui/" + str + "/01.jpg")
+		//	lihui, err := gg.LoadImage("data/kokomi/lihui/" + str + "/01.jpg")
+		lihui, err := gg.LoadImage("data/kokomi/character/" + str + "/imgs/splash.webp")
 		if err != nil {
 			ctx.SendChain(message.Text("获取立绘失败", err))
 			return
 		}
-		dc.DrawImage(lihui, 0, 0)
+		dc.Scale(0.8, 0.8)
+		dc.DrawImage(lihui, -300, 0)
+		dc.Scale(5.0/4, 5.0/4)
 		// 好感度,uid
 		FontFile := "data/kokomi/font/sakura.ttf" // 字体
 		if err := dc.LoadFontFace(FontFile, 25); err != nil {
@@ -163,36 +166,44 @@ func init() { // 主函数
 			panic(err)
 		}
 		dc.DrawString(str, 630, 75)
+
+		//新建图层,实现阴影400*510
+		bg := Yinying(400, 510, 16)
+		//字图层
+		one := gg.NewContext(400, 500)
 		// 属性630*370,字50
-		if err := dc.LoadFontFace(FontFile, 50); err != nil { // 字体大小
+		if err := one.LoadFontFace(FontFile, 50); err != nil { // 字体大小
 			panic(err)
 		}
-		dc.DrawString("生命值:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2000)), 630, 370)
-		dc.DrawString("攻击力:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2001)), 630, 430)
-		dc.DrawString("防御力:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2002)), 630, 490)
-		dc.DrawString("元素精通:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num28)), 630, 550)
-		dc.DrawString("暴击率:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num20*100))+"%", 630, 610)
-		dc.DrawString("暴击伤害:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num22*100))+"%", 630, 670)
-		dc.DrawString("元素充能:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num23*100))+"%", 630, 730)
+		one.SetRGB(1, 1, 1) //白色
+		one.DrawString("生命值:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2000)), 5, 65)
+		one.DrawString("攻击力:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2001)), 5, 125)
+		one.DrawString("防御力:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2002)), 5, 185)
+		one.DrawString("元素精通:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num28)), 5, 245)
+		one.DrawString("暴击率:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num20*100))+"%", 5, 305)
+		one.DrawString("暴击伤害:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num22*100))+"%", 5, 365)
+		one.DrawString("元素充能:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num23*100))+"%", 5, 425)
 		// 元素加伤判断
 		switch {
 		case alldata.AvatarInfoList[t].FightPropMap.Num30*100 > 0:
-			dc.DrawString("物理加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num30*100))+"%", 630, 790)
+			one.DrawString("物理加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num30*100))+"%", 5, 485)
 		case alldata.AvatarInfoList[t].FightPropMap.Num40*100 > 0:
-			dc.DrawString("火元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num40*100))+"%", 630, 790)
+			one.DrawString("火元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num40*100))+"%", 5, 485)
 		case alldata.AvatarInfoList[t].FightPropMap.Num41*100 > 0:
-			dc.DrawString("雷元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num41*100))+"%", 630, 790)
+			one.DrawString("雷元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num41*100))+"%", 5, 485)
 		case alldata.AvatarInfoList[t].FightPropMap.Num42*100 > 0:
-			dc.DrawString("水元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num42*100))+"%", 630, 790)
+			one.DrawString("水元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num42*100))+"%", 5, 485)
 		case alldata.AvatarInfoList[t].FightPropMap.Num44*100 > 0:
-			dc.DrawString("风元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num44*100))+"%", 630, 790)
+			one.DrawString("风元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num44*100))+"%", 5, 485)
 		case alldata.AvatarInfoList[t].FightPropMap.Num45*100 > 0:
-			dc.DrawString("岩元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num45*100))+"%", 630, 790)
+			one.DrawString("岩元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num45*100))+"%", 5, 485)
 		case alldata.AvatarInfoList[t].FightPropMap.Num46*100 > 0:
-			dc.DrawString("冰元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num46*100))+"%", 630, 790)
-		default:
-			dc.DrawString("元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num43*100))+"%", 630, 790)
+			one.DrawString("冰元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num46*100))+"%", 5, 485)
+		default: //草或者无
+			one.DrawString("元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num43*100))+"%", 5, 485)
 		}
+		dc.DrawImage(bg, 710, 320)
+		dc.DrawImage(one.Image(), 710, 310)
 
 		// 天赋等级
 		if err := dc.LoadFontFace(FontFile, 65); err != nil { // 字体大小
@@ -227,7 +238,7 @@ func init() { // 主函数
 		}
 		dc.DrawString("攻击力:"+strconv.FormatFloat(alldata.AvatarInfoList[t].EquipList[5].Flat.WeaponStat[0].Value, 'f', 1, 32), 820, 200)
 		//Lv
-		dc.DrawString("Lv:"+strconv.Itoa(alldata.AvatarInfoList[t].EquipList[5].Weapon.Level), 1160, 200)
+		dc.DrawString("Lv:"+strconv.Itoa(alldata.AvatarInfoList[t].EquipList[5].Weapon.Level), 1110, 200)
 		//副词条
 		fucitiao, _ := IdforNamemap[alldata.AvatarInfoList[t].EquipList[5].Flat.WeaponStat[1].SubPropId] //名称
 		var baifen = "%"
@@ -241,11 +252,92 @@ func init() { // 主函数
 			ctx.SendChain(message.Text("获取武器图标", err))
 			return
 		}
-		dc.DrawImage(tuwq, 580, 120)
+		dc.Scale(1.5, 1.5)
+		dc.DrawImage(tuwq, 400, 90)
+		dc.Scale(1/1.5, 1/1.5)
 		//圣遗物
+		//缩小
+		dc.Scale(0.5, 0.5)
 		for i := 0; i < 5; i++ {
+			sywname, _ := IdforNamemap[alldata.AvatarInfoList[t].EquipList[i].Flat.SetNameTextHash]
+			tusyw, err := gg.LoadImage("data/kokomi/syw/" + sywname + "/" + strconv.Itoa(i+1) + ".webp")
+			if err != nil {
+				ctx.SendChain(message.Text("获取圣遗物图标", err))
+				return
+			}
+			//圣遗物图标坐标
+			var x, y int
+			switch i {
+			case 0:
+				x = 1920 - 310
+				y = 35
+			case 1:
+				x = 1920 - 620
+				y = 200
+			case 2:
+				x = 1920 - 310
+				y = 200
+			case 3:
+				x = 1920 - 620
+				y = 365
+			case 4:
+				x = 1920 - 310
+				y = 365
+			}
+			dc.DrawImage(tusyw, x*2, y*2-5)
+		}
+		//恢复大小
+		dc.Scale(2, 2)
+		//圣遗物属性
+		for i := 0; i < 5; i++ {
+			var x, y int //基轴
+			switch i {
+			case 0:
+				x = 1920 - 310
+				y = 35
+			case 1:
+				x = 1920 - 630
+				y = 200
+			case 2:
+				x = 1920 - 310
+				y = 200
+			case 3:
+				x = 1920 - 630
+				y = 365
+			case 4:
+				x = 1920 - 310
+				y = 365
+			}
+			if err := dc.LoadFontFace(FontFile, 35); err != nil { // 字体大小
+				panic(err)
+			}
+			zhuci := StoS(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.MainPropId)
+			dc.DrawString(zhuci, float64(x+135), float64(y+35))                                                                                  //主词条
+			dc.DrawString(strconv.Itoa(int(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.Value)), float64(x+135), float64(y+72)) //主词条
+			if err := dc.LoadFontFace(FontFile, 30); err != nil {                                                                                // 字体大小
+				panic(err)
+			}
+			for k := 0; k < 4; k++ {
+				var xx, yy int
+				switch k {
+				case 0:
+					xx = x
+					yy = y + 115
+				case 1:
+					xx = x + 150
+					yy = y + 115
+				case 2:
+					xx = x
+					yy = y + 150
+				case 3:
+					xx = x + 150
+					yy = y + 150
+				}
+				dc.DrawString(StoS(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquarySubStats[k].SubPropId)+":"+strconv.FormatFloat(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquarySubStats[k].Value, 'f', 1, 64), float64(xx), float64(yy))
+			}
 
 		}
+
 		// 输出图片
 		ff, cl := writer.ToBytes(dc.Image())  // 图片放入缓存
 		ctx.SendChain(message.ImageBytes(ff)) // 输出
