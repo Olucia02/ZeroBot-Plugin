@@ -64,6 +64,7 @@ func init() { // 主函数
 			_, _ = file.Write(es)
 			ctx.SendChain(message.Text("喵~更新成功"))
 			file.Close()
+			return
 		}
 		//##########################################################
 		// 获取本地缓存数据
@@ -82,12 +83,16 @@ func init() { // 主函数
 		}
 		switch str {
 		case "全部", "全部角色", "#全部":
+			if len(alldata.PlayerInfo.ShowAvatarInfoList) == 0 {
+				ctx.SendChain(message.Text("请在游戏中打开角色面板展示后再尝试"))
+				return
+			}
 			var msg strings.Builder
 			msg.WriteString("您的展示角色为:\n")
-			for i := 0; i < 8; i++ {
+			for i := 0; i < len(alldata.PlayerInfo.ShowAvatarInfoList); i++ {
 				mmm, _ := Uidmap[int64(alldata.PlayerInfo.ShowAvatarInfoList[i].AvatarID)]
 				msg.WriteString(mmm)
-				if i < 7 {
+				if i < len(alldata.PlayerInfo.ShowAvatarInfoList) {
 					msg.WriteByte('\n')
 				}
 			}
@@ -95,9 +100,10 @@ func init() { // 主函数
 			return
 		default: // 角色名解析为id
 			//排除#
-			if str[1:2] == "#" {
-				str = str[2:]
+			if str[0:1] == "#" {
+				str = str[1:]
 			}
+			//匹配简称/外号
 			str = FindName(str)
 			var flag bool
 			wifeid, flag = Namemap[str]
@@ -108,7 +114,7 @@ func init() { // 主函数
 		}
 		var t = -1
 		// 匹配角色
-		for i := 0; i < 8; i++ {
+		for i := 0; i < len(alldata.PlayerInfo.ShowAvatarInfoList); i++ {
 			if wifeid == int64(alldata.PlayerInfo.ShowAvatarInfoList[i].AvatarID) {
 				t = i
 			}
