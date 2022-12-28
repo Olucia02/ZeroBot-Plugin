@@ -32,6 +32,6 @@ func Yinying(x int, y int, r float64) image.Image {
 	zero.Fill()
 	//模糊
 	//shadow := imaging.Blur(one.Image(), 16)
-	bg := AdjustOpacity(zero.Image(), 0.5)
+	bg := AdjustOpacity(zero.Image(), 0.6)
 	return bg
 }

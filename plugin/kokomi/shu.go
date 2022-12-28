@@ -382,12 +382,39 @@ type Stat struct {
 func Getuid(qquid int64) (uid int) { // 获取对应游戏uid
 	sqquid := strconv.Itoa(int(qquid))
 	// 获取本地缓存数据
-	txt, err := os.ReadFile("data/kokomi/uid/" + sqquid + ".txt")
+	txt, err := os.ReadFile("data/kokomi/uid/" + sqquid + ".kokomi")
 	if err != nil {
 		return 0
 	}
 	sss, _ := strconv.Atoi(string(txt))
 	return sss
+}
+
+// 角色外号添加
+func FindName(a string) string {
+	switch a {
+	case "公子":
+		a = "达达利亚"
+	case "绫华", "神里":
+		a = "神里绫华"
+	case "绫人":
+		a = "神里绫人"
+	case "万叶":
+		a = "枫原万叶"
+	case "雷神":
+		a = "雷电将军"
+	case "一斗":
+		a = "荒泷一斗"
+	case "八重":
+		a = "八重神子"
+	case "九条":
+		a = "九条裟罗"
+	case "罗莎":
+		a = "罗莎莉亚"
+	case "平藏":
+		a = "鹿野院平藏"
+	}
+	return a
 }
 
 // 圣遗物词条简单描述
@@ -409,29 +436,67 @@ func StoS(val string) string {
 	case "FIGHT_PROP_CRITICAL":
 		vv = "暴击率"
 	case "FIGHT_PROP_CRITICAL_HURT":
-		vv = "爆伤"
+		vv = "暴击伤害"
 	case "FIGHT_PROP_CHARGE_EFFICIENCY":
-		vv = "充能"
+		vv = "元素充能"
 	case "FIGHT_PROP_HEAL_ADD":
-		vv = "治疗"
+		vv = "治疗加成"
 	case "FIGHT_PROP_ELEMENT_MASTERY":
-		vv = "精通"
+		vv = "元素精通"
 	case "FIGHT_PROP_PHYSICAL_ADD_HURT":
-		vv = "物伤"
+		vv = "物理加伤"
 	case "FIGHT_PROP_FIRE_ADD_HURT":
-		vv = "火伤"
+		vv = "火元素加伤"
 	case "FIGHT_PROP_ELEC_ADD_HURT":
-		vv = "雷伤"
+		vv = "雷元素加伤"
 	case "FIGHT_PROP_WATER_ADD_HURT":
-		vv = "水伤"
+		vv = "水元素加伤"
 	case "FIGHT_PROP_GRASS_ADD_HURT":
-		vv = "草伤"
+		vv = "草元素加伤"
 	case "FIGHT_PROP_WIND_ADD_HURT":
-		vv = "风伤"
+		vv = "风元素加伤"
 	case "FIGHT_PROP_ROCK_ADD_HURT":
-		vv = "岩伤"
+		vv = "岩元素加伤"
 	case "FIGHT_PROP_ICE_ADD_HURT":
-		vv = "冰伤"
+		vv = "冰元素加伤"
 	}
 	return vv
+}
+func Stofen(val string) string {
+	var vv = "%"
+	switch val {
+	case "FIGHT_PROP_HP":
+		vv = ""
+	case "FIGHT_PROP_HP_PERCENT":
+	case "FIGHT_PROP_ATTACK":
+		vv = ""
+	case "FIGHT_PROP_ATTACK_PERCENT":
+	case "FIGHT_PROP_DEFENSE":
+		vv = ""
+	case "FIGHT_PROP_DEFENSE_PERCENT":
+	case "FIGHT_PROP_CRITICAL":
+	case "FIGHT_PROP_CRITICAL_HURT":
+	case "FIGHT_PROP_CHARGE_EFFICIENCY":
+	case "FIGHT_PROP_HEAL_ADD":
+	case "FIGHT_PROP_ELEMENT_MASTERY":
+		vv = ""
+	case "FIGHT_PROP_PHYSICAL_ADD_HURT":
+	case "FIGHT_PROP_FIRE_ADD_HURT":
+	case "FIGHT_PROP_ELEC_ADD_HURT":
+	case "FIGHT_PROP_WATER_ADD_HURT":
+	case "FIGHT_PROP_GRASS_ADD_HURT":
+	case "FIGHT_PROP_WIND_ADD_HURT":
+	case "FIGHT_PROP_ROCK_ADD_HURT":
+	case "FIGHT_PROP_ICE_ADD_HURT":
+	}
+	return vv
+}
+
+func Tianfujiuzhen(val string) int {
+	var bb = 257 //280
+	switch val {
+	case "芭芭拉", "北斗", "多莉", "甘雨", "胡桃", "科莱", "雷电将军", "罗莎莉亚", "凝光", "赛诺", "魈", "行秋", "烟绯", "夜兰", "早柚":
+		bb = 280
+	}
+	return bb
 }
