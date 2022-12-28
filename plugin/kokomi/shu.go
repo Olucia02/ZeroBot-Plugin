@@ -332,11 +332,9 @@ type Data struct {
 			} `json:"reliquary,omitempty"`
 			Flat   Flat `json:"flat"` //标记
 			Weapon struct {
-				Level        int `json:"level"`
-				PromoteLevel int `json:"promoteLevel"`
-				AffixMap     struct {
-					Num113405 int `json:"113405"`
-				} `json:"affixMap"`
+				Level        int         `json:"level"`
+				PromoteLevel int         `json:"promoteLevel"`
+				AffixMap     map[int]int `json:"affixMap"`
 			} `json:"weapon,omitempty"`
 		} `json:"equipList"`
 		FetterInfo struct {
@@ -352,7 +350,7 @@ type Data struct {
 	UID string `json:"uid"`
 }
 
-// Flat详细数据
+// Flat ... 详细数据
 type Flat struct {
 	// l10n
 	NameTextHash    string `json:"nameTextMapHash"`
@@ -371,10 +369,10 @@ type Flat struct {
 	Icon      string `json:"icon"`      // You can get the icon from https://enka.network/ui/{Icon}.png
 }
 
-// Stat 属性对
+// Stat ...  属性对
 type Stat struct {
-	MainPropId string  `json:"mainPropId,omitempty"`
-	SubPropId  string  `json:"appendPropId,omitempty"`
+	MainPropID string  `json:"mainPropId,omitempty"`
+	SubPropID  string  `json:"appendPropId,omitempty"`
 	Value      float64 `json:"statValue"`
 }
 
@@ -390,7 +388,7 @@ func Getuid(qquid int64) (uid int) { // 获取对应游戏uid
 	return sss
 }
 
-// 角色外号添加
+// FindName 角色外号添加
 func FindName(a string) string {
 	switch a {
 	case "公子":
@@ -417,7 +415,7 @@ func FindName(a string) string {
 	return a
 }
 
-// 圣遗物词条简单描述
+// StoS 圣遗物词条简单描述
 func StoS(val string) string {
 	var vv string
 	switch val {
@@ -462,6 +460,8 @@ func StoS(val string) string {
 	}
 	return vv
 }
+
+// Stofen 判断词条分号
 func Stofen(val string) string {
 	var vv = "%"
 	switch val {
@@ -492,6 +492,7 @@ func Stofen(val string) string {
 	return vv
 }
 
+// Tianfujiuzhen 修复部分贴图大小错误
 func Tianfujiuzhen(val string) int {
 	var bb = 257 //280
 	switch val {

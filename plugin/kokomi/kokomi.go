@@ -27,14 +27,14 @@ import (
 const (
 	url     = "https://enka.minigg.cn/u/%v/__data.json"
 	edition = "Created By ZeroBot-Plugin v1.6.1-beta2 & kokomi v2"
-	tu      = "http://api.iw233.cn/api.php?sort=pc"
+	tu      = "https://api.yimian.xyz/img?type=moe&size=1920x1080"
 )
 
 func init() { // 主函数
 	en := control.Register("kokomi", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Brief:            "原神相关功能",
-		Help: "命令大全,需要依次执行\n" +
+		Help: "原神面板执行方法,第一次需要依次执行\n" +
 			"- 绑定......(uid)\n" +
 			"- 更新面板\n" +
 			"- 全部面板\n" +
@@ -90,7 +90,7 @@ func init() { // 主函数
 			var msg strings.Builder
 			msg.WriteString("您的展示角色为:\n")
 			for i := 0; i < len(alldata.PlayerInfo.ShowAvatarInfoList); i++ {
-				mmm, _ := Uidmap[int64(alldata.PlayerInfo.ShowAvatarInfoList[i].AvatarID)]
+				mmm := Uidmap[int64(alldata.PlayerInfo.ShowAvatarInfoList[i].AvatarID)]
 				msg.WriteString(mmm)
 				if i < len(alldata.PlayerInfo.ShowAvatarInfoList) {
 					msg.WriteByte('\n')
@@ -218,21 +218,21 @@ func init() { // 主函数
 		}
 		var link = []int{0, 0, 0, 0}
 		var i = 0
-		for k, _ := range alldata.AvatarInfoList[t].SkillLevelMap {
+		for k := range alldata.AvatarInfoList[t].SkillLevelMap {
 			link[i] = k
 			i++
 		}
 		sort.Ints(link)
-		lin1, _ := alldata.AvatarInfoList[t].SkillLevelMap[link[0]]
-		lin2, _ := alldata.AvatarInfoList[t].SkillLevelMap[link[1]]
-		lin3, _ := alldata.AvatarInfoList[t].SkillLevelMap[link[2]]
-		lin4, _ := alldata.AvatarInfoList[t].SkillLevelMap[link[3]]
+		lin1 := alldata.AvatarInfoList[t].SkillLevelMap[link[0]]
+		lin2 := alldata.AvatarInfoList[t].SkillLevelMap[link[1]]
+		lin3 := alldata.AvatarInfoList[t].SkillLevelMap[link[2]]
+		lin4 := alldata.AvatarInfoList[t].SkillLevelMap[link[3]]
 		//排除绫华莫娜四天赋错误
 		if lin4 != 0 {
 			lin1 = lin2
 			lin2 = lin3
 			lin3 = lin4
-			lin4 = 0
+			//lin4 = 0
 		}
 		//v1版本dc.DrawString("天赋等级:"+strconv.Itoa(lin1)+"--"+strconv.Itoa(lin2)+"--"+strconv.Itoa(lin3), 630, 900)
 		//贴图
@@ -256,6 +256,10 @@ func init() { // 主函数
 		}
 		//边框间隔180
 		kuang, err := gg.LoadPNG("data/kokomi/pro/" + pro + ".png")
+		if err != nil {
+			ctx.SendChain(message.Text("获取天赋边框失败", err))
+			return
+		}
 		dc.DrawImage(kuang, 520, 220)
 		dc.DrawImage(kuang, 700, 220)
 		dc.DrawImage(kuang, 880, 220)
@@ -289,7 +293,7 @@ func init() { // 主函数
 		}
 		//武器图层
 		//新建图层,实现阴影
-		yin_wq := Yinying(340, 180, 16)
+		yinwq := Yinying(340, 180, 16)
 		// 字图层
 		two := gg.NewContext(340, 180)
 		if err := two.LoadFontFace(FontFile, 30); err != nil {
@@ -297,13 +301,17 @@ func init() { // 主函数
 		}
 		two.SetRGB(1, 1, 1) //白色
 		//武器名
-		wq, _ := IdforNamemap[alldata.AvatarInfoList[t].EquipList[5].Flat.NameTextHash]
+		wq := IdforNamemap[alldata.AvatarInfoList[t].EquipList[5].Flat.NameTextHash]
 		two.DrawString(wq, 180, 50)
 
 		//详细
 		two.DrawString("攻击力:"+strconv.FormatFloat(alldata.AvatarInfoList[t].EquipList[5].Flat.WeaponStat[0].Value, 'f', 1, 32), 150, 130)
 		//Lv,精炼
-		two.DrawString("Lv."+strconv.Itoa(alldata.AvatarInfoList[t].EquipList[5].Weapon.Level)+"  精炼:"+strconv.Itoa(int(alldata.AvatarInfoList[t].EquipList[5].Flat.RankLevel)), 150, 90)
+		var wqjl int
+		for m := range alldata.AvatarInfoList[t].EquipList[5].Weapon.AffixMap {
+			wqjl = m
+		}
+		two.DrawString("Lv."+strconv.Itoa(alldata.AvatarInfoList[t].EquipList[5].Weapon.Level)+"  精炼:"+strconv.Itoa(alldata.AvatarInfoList[t].EquipList[5].Weapon.AffixMap[wqjl]+1), 150, 90)
 		/*副词条,放不下
 		fucitiao, _ := IdforNamemap[alldata.AvatarInfoList[t].EquipList[5].Flat.WeaponStat[1].SubPropId] //名称
 		var baifen = "%"
@@ -320,12 +328,12 @@ func init() { // 主函数
 		}
 		tuwq = resize.Resize(130, 0, tuwq, resize.Bilinear)
 		two.DrawImage(tuwq, 10, 10)
-		dc.DrawImage(yin_wq, 20, 920)
+		dc.DrawImage(yinwq, 20, 920)
 		dc.DrawImage(two.Image(), 20, 920)
 
 		//圣遗物
 		//缩小
-		yin_syw := Yinying(340, 350, 16)
+		yinsyw := Yinying(340, 350, 16)
 		for i := 0; i < 5; i++ {
 			// 字图层
 			three := gg.NewContext(340, 350)
@@ -334,7 +342,7 @@ func init() { // 主函数
 			}
 			//字号30,间距50
 			three.SetRGB(1, 1, 1) //白色
-			sywname, _ := IdforNamemap[alldata.AvatarInfoList[t].EquipList[i].Flat.SetNameTextHash]
+			sywname := IdforNamemap[alldata.AvatarInfoList[t].EquipList[i].Flat.SetNameTextHash]
 			tusyw, err := gg.LoadImage("data/kokomi/syw/" + sywname + "/" + strconv.Itoa(i+1) + ".webp")
 			if err != nil {
 				ctx.SendChain(message.Text("获取圣遗物图标失败", err))
@@ -348,7 +356,7 @@ func init() { // 主函数
 			//圣遗物单个评分
 			//three.DrawString(pingfeng+"分"+pingji, 120, 85)
 			//圣遗物属性
-			zhuci := StoS(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.MainPropId) //主词条
+			zhuci := StoS(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.MainPropID) //主词条
 			zhucitiao := strconv.Itoa(int(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.Value))
 			//间隔45,初始145
 			var xx, yy float64 //xx,yy词条相对位置,x,y文本框在全图位置
@@ -357,7 +365,7 @@ func init() { // 主函数
 			yy = 145
 			//主词条
 			three.DrawString("主:"+zhuci, xx, yy)                                                                                      //主词条名字
-			three.DrawString("+"+zhucitiao+Stofen(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.MainPropId), 200, yy) //主词条属性
+			three.DrawString("+"+zhucitiao+Stofen(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.MainPropID), 200, yy) //主词条属性
 			for k := 0; k < 4; k++ {
 				switch k {
 				case 0:
@@ -369,8 +377,8 @@ func init() { // 主函数
 				case 3:
 					yy = 325
 				}
-				three.DrawString(StoS(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquarySubStats[k].SubPropId), xx, yy)
-				three.DrawString("+"+strconv.FormatFloat(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquarySubStats[k].Value, 'f', 1, 64)+Stofen(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquarySubStats[k].SubPropId), 200, yy)
+				three.DrawString(StoS(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquarySubStats[k].SubPropID), xx, yy)
+				three.DrawString("+"+strconv.FormatFloat(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquarySubStats[k].Value, 'f', 1, 64)+Stofen(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquarySubStats[k].SubPropID), 200, yy)
 			}
 			switch i {
 			case 0:
@@ -389,11 +397,11 @@ func init() { // 主函数
 				x = 720
 				y = 1280
 			}
-			dc.DrawImage(yin_syw, x, y)
+			dc.DrawImage(yinsyw, x, y)
 			dc.DrawImage(three.Image(), x, y)
 		}
 		//总评分框
-		yin_ping := Yinying(340, 160, 16)
+		yinping := Yinying(340, 160, 16)
 		// 字图层
 		four := gg.NewContext(340, 160)
 		if err := four.LoadFontFace(FontFile, 25); err != nil {
@@ -411,7 +419,7 @@ func init() { // 主函数
 			panic(err)
 		}
 		four.DrawString("圣遗物评级  圣遗物总分", 40, 150)
-		dc.DrawImage(yin_ping, 20, 1110)
+		dc.DrawImage(yinping, 20, 1110)
 		dc.DrawImage(four.Image(), 20, 1110)
 
 		//伤害显示区,暂时展示图片
