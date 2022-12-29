@@ -1,72 +1,57 @@
-文档说明 kokomi_v2
-若从群文件下载,用此安装教程
-群文件下载压缩包,保证版本一致
-解压文件两个压缩包,得到两个名为kokomi的文件夹(不要合并)
-将小(占内存)的那个放在plugin文件夹,大的放在data文件夹,完成后保证文件夹名为kokomi
+# kokomi
 
-//新建图层,实现阴影400*510
-		bg := Yinying(400, 510, 16)
+kokomi是一个ZeroBot-Plugin的升级插件，提供包括角色查询等升级功能。
 
-"好感度"+strconv.Itoa(alldata.AvatarInfoList[t].FetterInfo.ExpLevel
-"昵称:"+alldata.PlayerInfo.Nickname
-"uid:"+suid
-角色"LV"+strconv.Itoa(alldata.PlayerInfo.ShowAvatarInfoList[t].Level)
-命之座strconv.Itoa(len(alldata.AvatarInfoList[t].TalentIDList))+"命"
-        one.DrawString("生命值:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2000)), 5, 65)
-		one.DrawString("攻击力:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2001)), 5, 125)
-		one.DrawString("防御力:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num2002)), 5, 185)
-		one.DrawString("元素精通:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num28)), 5, 245)
-		one.DrawString("暴击率:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num20*100))+"%", 5, 305)
-		one.DrawString("暴击伤害:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num22*100))+"%", 5, 365)
-		one.DrawString("元素充能:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num23*100))+"%", 5, 425)
-        // 元素加伤判断
-		switch {
-		case alldata.AvatarInfoList[t].FightPropMap.Num30*100 > 0:
-			one.DrawString("物理加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num30*100))+"%", 5, 485)
-		case alldata.AvatarInfoList[t].FightPropMap.Num40*100 > 0:
-			one.DrawString("火元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num40*100))+"%", 5, 485)
-		case alldata.AvatarInfoList[t].FightPropMap.Num41*100 > 0:
-			one.DrawString("雷元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num41*100))+"%", 5, 485)
-		case alldata.AvatarInfoList[t].FightPropMap.Num42*100 > 0:
-			one.DrawString("水元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num42*100))+"%", 5, 485)
-		case alldata.AvatarInfoList[t].FightPropMap.Num44*100 > 0:
-			one.DrawString("风元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num44*100))+"%", 5, 485)
-		case alldata.AvatarInfoList[t].FightPropMap.Num45*100 > 0:
-			one.DrawString("岩元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num45*100))+"%", 5, 485)
-		case alldata.AvatarInfoList[t].FightPropMap.Num46*100 > 0:
-			one.DrawString("冰元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num46*100))+"%", 5, 485)
-		default: //草或者无
-			one.DrawString("元素加伤:"+strconv.Itoa(int(alldata.AvatarInfoList[t].FightPropMap.Num43*100))+"%", 5, 485)
-		}
+具体功能可在安装插件后 通过 /用法kokomi 进行查看。
+安装与更新
 
-        // 天赋等级
-		if err := dc.LoadFontFace(FontFile, 65); err != nil { // 字体大小
-			panic(err)
-		}
-		var link = []int{0, 0, 0}
-		var i = 0
-		for k, _ := range alldata.AvatarInfoList[t].SkillLevelMap {
-			link[i] = k
-			i++
-		}
-		sort.Ints(link)
-		lin1, _ := alldata.AvatarInfoList[t].SkillLevelMap[link[0]]
-		lin2, _ := alldata.AvatarInfoList[t].SkillLevelMap[link[1]]
-		lin3, _ := alldata.AvatarInfoList[t].SkillLevelMap[link[2]]
-    "天赋等级:"+strconv.Itoa(lin1)+"--"+strconv.Itoa(lin2)+"--"+strconv.Itoa(lin3)
+推荐使用git进行安装，以方便后续升级。在ZeroBot-Plugin根目录夹打开终端，运行
 
-    武器名字wq, _ := IdforNamemap[alldata.AvatarInfoList[t].EquipList[5].Flat.NameTextHash]
-    "精炼:"+strconv.Itoa(int(alldata.AvatarInfoList[t].EquipList[5].Flat.RankLevel))
-    "攻击力:"+strconv.FormatFloat(alldata.AvatarInfoList[t].EquipList[5].Flat.WeaponStat[0].Value
-    "Lv:"+strconv.Itoa(alldata.AvatarInfoList[t].EquipList[5].Weapon.Level
-    //副词条
-		fucitiao, _ := IdforNamemap[alldata.AvatarInfoList[t].EquipList[5].Flat.WeaponStat[1].SubPropId] //名称
-		var baifen = "%"
-		if fucitiao == "元素精通" {
-			baifen = ""
-		}
-        fucitiao+":"+strconv.Itoa(int(alldata.AvatarInfoList[t].EquipList[5].Flat.WeaponStat[1].Value
+// 使用github
+git clone https://github.com/yoimiya-kokomi/miao-plugin.git ./plugins/miao-plugin/
 
+进行下载插件。
 
-        //圣遗物
-        名字sywname, _ := IdforNamemap[alldata.AvatarInfoList[t].EquipList[i].Flat.SetNameTextHash]
+然后在main.go中导入包	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/kokomi"        // kokomi原神面板
+
+//在群文件下载
+如果是手工下载的zip压缩包，请将解压后的kokomi文件夹放置在ZeroBot-Plugin目录下的plugins文件夹内。
+
+然后在main.go中导入包	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/kokomi" 
+
+功能说明(移植喵喵菜单)
+#绑定uid
+#更新面板
+#全部角色面板
+#雷神面板
+
+#更新面板 依赖于面板查询API，面板服务由 http://enka.network/ 提供
+
+如果可以的话，也请在Patreon上支持Enka，或提供闲置的原神账户，具体可在Enka官网 Discord联系
+
+国内网络如Enka服务访问不稳定，可尝试更换 @MiniGrayGay 大佬提供的中转服务
+方法:将kokomi/kokomi.go中的url二级网址替换即可
+
+    【链接1】：https://enka.microgg.cn/
+    【链接2】：https://enka.minigg.cn/
+//以后将适配的功能
+#雷神伤害
+
+喵喵本地计算
+
+#雷神圣遗物
+
+圣遗物评分为喵喵版评分规则
+
+免责声明
+
+    功能仅限交流技术使用，请勿将kokomi用于以盈利为目的的场景
+    图片与其他素材均来借用喵喵菜单，在此感谢大佬，如有侵权请联系，会立即删除
+
+其他
+
+    喵喵插件 Miao-Plugin : Gitee / Github
+    Enka: 感谢Enka提供的面板服务
+    Snap.Genshin : 感谢 DGP Studio 开发的 胡桃API
+    QQ群
+       ZeroBot-Plugin官方二群609640932
