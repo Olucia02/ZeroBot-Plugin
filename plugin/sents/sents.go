@@ -52,7 +52,7 @@ func init() {
 									gid := g.Get("group_id").Int()
 									ctx.SendGroupMessage(gid, origin)
 									i++
-									time.Sleep(3 * 100 * time.Microsecond)
+									time.Sleep(1000 * time.Microsecond) //1s
 								}
 								ctx.SendGroupMessage(mastergid, message.Text("共计发送", i, "条消息,\n", "任务完成了喵~"))
 								return true
