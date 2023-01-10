@@ -53,7 +53,7 @@ func init() { // 主函数
 		// uid := 113781666 //测试用
 		suid := strconv.Itoa(uid)
 		if uid == 0 {
-			ctx.SendChain(message.Text("未绑定uid"))
+			ctx.SendChain(message.Text("-未绑定uid"))
 			return
 		}
 		//############################################################判断数据更新,逻辑原因不能合并进switch
@@ -66,7 +66,7 @@ func init() { // 主函数
 			// 创建存储文件,路径plugin/kokomi/data/js
 			file, _ := os.OpenFile("plugin/kokomi/data/js/"+suid+".kokomi", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 			_, _ = file.Write(es)
-			ctx.SendChain(message.Text("角色面板更新成功喵~"))
+			ctx.SendChain(message.Text("-角色面板更新成功喵~"))
 			file.Close()
 			return
 		}
@@ -74,7 +74,7 @@ func init() { // 主函数
 		// 获取本地缓存数据
 		txt, err := os.ReadFile("plugin/kokomi/data/js/" + suid + ".kokomi")
 		if err != nil {
-			ctx.SendChain(message.Text("本地未找到账号信息, 请更新面板"))
+			ctx.SendChain(message.Text("-本地未找到账号信息, 请更新面板"))
 			return
 		}
 
@@ -88,7 +88,7 @@ func init() { // 主函数
 		switch str {
 		case "全部", "全部角色", "#全部":
 			if len(alldata.PlayerInfo.ShowAvatarInfoList) == 0 {
-				ctx.SendChain(message.Text("请在游戏中打开角色面板展示后再尝试"))
+				ctx.SendChain(message.Text("-请在游戏中打开角色面板展示后再尝试"))
 				return
 			}
 			var msg strings.Builder
@@ -96,7 +96,7 @@ func init() { // 主函数
 			for i := 0; i < len(alldata.PlayerInfo.ShowAvatarInfoList); i++ {
 				mmm := Uidmap[int64(alldata.PlayerInfo.ShowAvatarInfoList[i].AvatarID)]
 				msg.WriteString(mmm)
-				if i < len(alldata.PlayerInfo.ShowAvatarInfoList) {
+				if i < len(alldata.PlayerInfo.ShowAvatarInfoList)-1 {
 					msg.WriteByte('\n')
 				}
 			}
@@ -545,25 +545,25 @@ func init() { // 主函数
 		suid := ctx.State["regex_matched"].([]string)[3] // 获取uid
 		int64uid, err := strconv.ParseInt(suid, 10, 64)
 		if suid == "" || int64uid < 100000000 || int64uid > 1000000000 || err != nil {
-			ctx.SendChain(message.Text("请输入正确的uid"))
+			ctx.SendChain(message.Text("-请输入正确的uid"))
 			return
 		}
 		sqquid := strconv.Itoa(int(ctx.Event.UserID))
 		file, _ := os.OpenFile("plugin/kokomi/data/uid/"+sqquid+".kokomi", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 		_, _ = file.Write([]byte(suid))
 		file.Close()
-		ctx.SendChain(message.Text("-绑定uid" + suid + "成功喵~\n" + "-尝试获取角色信息~"))
+		ctx.SendChain(message.Text("-绑定uid" + suid + "成功喵~\n" + "-尝试获取角色面板信息~"))
 
 		//更新面板程序
 		es, err := web.GetData(fmt.Sprintf(url, suid)) // 网站返回结果
 		if err != nil {
-			ctx.SendChain(message.Text("网站获取角色信息失败", err))
+			ctx.SendChain(message.Text("-网站获取角色信息失败", err))
 			return
 		}
 		// 创建存储文件,路径plugin/kokomi/data/js
 		file1, _ := os.OpenFile("plugin/kokomi/data/js/"+suid+".kokomi", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 		_, _ = file1.Write(es)
-		ctx.SendChain(message.Text("角色面板更新成功喵~"))
+		ctx.SendChain(message.Text("-角色面板更新成功喵~"))
 		file1.Close()
 	})
 }
