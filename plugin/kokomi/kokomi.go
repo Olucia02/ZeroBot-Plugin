@@ -162,11 +162,11 @@ func init() { // 主函数
 		}
 		//立绘参数
 		sxx := lihui.Bounds().Size().X
-		syy := lihui.Bounds().Size().Y
-		rate := 800 / float64(syy)
-		dc.Scale(rate, rate)
+		/*syy := lihui.Bounds().Size().Y
+		 */
+		lihui = resize.Resize(0, 820, lihui, resize.Bilinear)
 		dc.DrawImage(lihui, int(270-float64(sxx)/2), 90)
-		dc.Scale(1/rate, 1/rate)
+
 		//角色名字
 		if err := dc.LoadFontFace(NameFont, 80); err != nil {
 			panic(err)
