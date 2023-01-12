@@ -575,11 +575,11 @@ func init() { // 主函数
 				return
 			}
 			kuang = resize.Resize(80, 0, kuang, resize.Bilinear)
-			dc.DrawImage(kuang, -60+m*70, 800)
+			dc.DrawImage(kuang, -50+m*70, 800)
 			if mm > ming {
 				tuming = AdjustOpacity(tuming, 0.5)
 			}
-			dc.DrawImage(tuming, -40+m*70, 825)
+			dc.DrawImage(tuming, -30+m*70, 825)
 			mm++
 		}
 		//**************************************************************************************************
