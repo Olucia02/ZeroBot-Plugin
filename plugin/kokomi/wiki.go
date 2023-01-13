@@ -31,10 +31,10 @@ func init() { // 主函数
 		DisableOnDefault: false,
 		Brief:            "原神wiki查询",
 		Help: "原神wiki查询功能\n" +
-			"- -\n" +
-			"- 更新面板\n" +
-			"- 全部面板\n" +
-			"- XX面板",
+			"- -#查卡xxx[七圣召唤查卡]\n" +
+			"- xxx\n" +
+			"- xxx\n" +
+			"- xxx",
 	})
 	en.OnPrefix("#").SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		str := ctx.State["args"].(string) // 获取key
