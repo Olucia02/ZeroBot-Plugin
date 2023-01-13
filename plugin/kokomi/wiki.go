@@ -23,7 +23,7 @@ const (
 	url7  = "https://raw.githubusercontents.com/Nwflower/genshin-atlas/master/artifact/%v.png"                     //圣遗物图鉴
 	url8  = "https://raw.githubusercontents.com/CMHopeSunshine/GenshinWikiMap/master/results/monster_map/%v.jpg"   //原魔图鉴
 	url9  = "https://raw.githubusercontents.com/Nwflower/genshin-atlas/master/specialty/%v.png"                    //特产图鉴
-	url10 = "https://raw.githubusercontents.com/Nwflower/genshin-atlas/master%v"                                   //七圣召唤卡
+	url10 = "https://ghproxy.com/https://raw.githubusercontent.com/Nwflower/genshin-atlas/master%v"                //七圣召唤卡
 )
 
 func init() { // 主函数
