@@ -25,7 +25,9 @@ type wifequan struct {
 
 // wiki查询地址结构解析
 type Wikimap struct {
-	Card map[string]string `json:"card"`
+	Card      map[string]string `json:"card"`
+	Matera    map[string]string `json:"material for role"`
+	Specialty map[string]string `json:"specialty"`
 }
 
 // 各种简称map查询
