@@ -15,16 +15,16 @@ import (
 )
 
 const (
-	url1  = "https://raw.githubusercontent.com/CMHopeSunshine/GenshinWikiMap/master/results/character_map/%v.jpg" //角色图鉴
-	url2  = "https://raw.githubusercontent.com/CMHopeSunshine/LittlePaimonRes/main/genshin_guide/guide/%v.jpg"    //角色攻略
-	url3  = "https://ghproxy.com/https://raw.githubusercontent.com/Nwflower/genshin-atlas/master%v"               //角色材料
-	url4  = "https://raw.githubusercontent.com/CMHopeSunshine/LittlePaimonRes/main/genshin_guide/curve/%v.jpg"    //收益曲线
-	url5  = "https://raw.githubusercontent.com/CMHopeSunshine/LittlePaimonRes/main/genshin_guide/panel/%v.jpg"    //参考面板
-	url6  = "https://raw.githubusercontent.com/Nwflower/genshin-atlas/master/weapon/%v.png"                       //武器图鉴
-	url7  = "https://raw.githubusercontent.com/Nwflower/genshin-atlas/master/artifact/%v.png"                     //圣遗物图鉴
-	url8  = "https://raw.githubusercontent.com/CMHopeSunshine/GenshinWikiMap/master/results/monster_map/%v.jpg"   //原魔图鉴
-	url9  = "https://ghproxy.com/https://raw.githubusercontent.com/Nwflower/genshin-atlas/master%v"               //特产图鉴
-	url10 = "https://ghproxy.com/https://raw.githubusercontent.com/Nwflower/genshin-atlas/master%v"               //七圣召唤卡
+	url1  = "https://ghproxy.com/https://raw.githubusercontent.com/CMHopeSunshine/GenshinWikiMap/master/results/character_map/%v.jpg" //角色图鉴
+	url2  = "https://raw.githubusercontent.com/CMHopeSunshine/LittlePaimonRes/main/genshin_guide/guide/%v.jpg"                        //角色攻略
+	url3  = "https://ghproxy.com/https://raw.githubusercontent.com/Nwflower/genshin-atlas/master%v"                                   //角色材料
+	url4  = "https://raw.githubusercontent.com/CMHopeSunshine/LittlePaimonRes/main/genshin_guide/curve/%v.jpg"                        //收益曲线
+	url5  = "https://raw.githubusercontent.com/CMHopeSunshine/LittlePaimonRes/main/genshin_guide/panel/%v.jpg"                        //参考面板
+	url6  = "https://raw.githubusercontent.com/Nwflower/genshin-atlas/master/weapon/%v.png"                                           //武器图鉴
+	url7  = "https://raw.githubusercontent.com/Nwflower/genshin-atlas/master/artifact/%v.png"                                         //圣遗物图鉴
+	url8  = "https://raw.githubusercontent.com/CMHopeSunshine/GenshinWikiMap/master/results/monster_map/%v.jpg"                       //原魔图鉴
+	url9  = "https://ghproxy.com/https://raw.githubusercontent.com/Nwflower/genshin-atlas/master%v"                                   //特产图鉴
+	url10 = "https://ghproxy.com/https://raw.githubusercontent.com/Nwflower/genshin-atlas/master%v"                                   //七圣召唤卡
 )
 
 func init() { // 主函数
@@ -32,10 +32,10 @@ func init() { // 主函数
 		DisableOnDefault: false,
 		Brief:            "原神wiki查询",
 		Help: "原神wiki查询功能\n" +
-			"- -#查卡xxx[七圣召唤查卡]\n" +
-			"- xxx\n" +
-			"- xxx\n" +
-			"- xxx",
+			"- #查卡xxx[七圣召唤查卡]\n" +
+			"- #特产xxx[地区特产查询]\n" +
+			"- #材料/培养xxx[角色培养材料查询]\n" +
+			"- #xxx",
 	})
 	en.OnPrefix("#").SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		str := ctx.State["args"].(string) // 获取key
@@ -71,6 +71,19 @@ func init() { // 主函数
 		case "特产":
 			url = url9
 			k = paths.Specialty[word]
+		default:
+			url = url1
+			swifeid := Findnames(str, "wife")
+			if swifeid == "" {
+				return
+			}
+			wifeid, _ := strconv.ParseInt(swifeid, 10, 64)
+			var flag bool
+			k, flag = Uidmap[wifeid]
+			if !flag {
+				ctx.SendChain(message.Text("Uidmap数据缺失"))
+				return
+			}
 		}
 		if k == "" {
 			ctx.SendChain(message.Text("未找到信息呜"))
