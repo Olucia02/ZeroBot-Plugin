@@ -4,7 +4,7 @@ package quan
 import (
 	"fmt"
 	"strconv"
-	//"regexp"
+	"strings"
 
 	"github.com/FloatTech/floatbox/web"
 	ctrl "github.com/FloatTech/zbpctrl"
@@ -16,7 +16,6 @@ import (
 
 const (
 	quan = "http://tc.tfkapi.top/API/qqqz.php?qq=%v" // api
-	bang = "http://tfapi.top/API/qqbd.php?msg=%v"
 )
 
 func init() { // 主函数
@@ -37,20 +36,19 @@ func init() { // 主函数
 			ctx.SendChain(message.Text("出现错误捏：", err))
 			return
 		}
-		ctx.SendChain(message.Text(str, helper.BytesToString(es))) // 输出结果
-	})
-	en.OnRegex(`^./123\s*(\[CQ:at,qq=)?(\d+)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
-		str := ctx.State["regex_matched"].([]string)[2] // 获取uid
-		if str == "" {
-			return
-		}
-		es, err := web.GetData(fmt.Sprintf(bang, str)) // 将网站返回结果赋值
+		f := helper.BytesToString(es)[24:]
+		_, err = strconv.Atoi(f)
 		if err != nil {
-			ctx.SendChain(message.Text("出现错误捏：", err))
+			ctx.SendChain(message.Text("网站维护中")) // 输出结果
 			return
 		}
-		//r, _ := regexp.Compile("手机号:(.*)地区") //helper.BytesToString(es)
-		ctx.SendChain(message.Text(str, helper.BytesToString(es))) // 输出结果
-		//ctx.SendChain(message.Text("111...", r.FindString(helper.BytesToString(es)))) // 输出结果
+		var msg strings.Builder
+		msg.WriteString("查询账号:")
+		msg.WriteString(str)
+		msg.WriteString("\n")
+		msg.WriteString("查询状态:成功\n")
+		msg.WriteString("您的权重为:")
+		msg.WriteString(f)
+		ctx.SendChain(message.Text(msg.String())) // 输出结果
 	})
 }
