@@ -225,7 +225,7 @@ func init() { // 主函数
 			three.DrawString(sywallname[i], 110, 50)
 			//圣遗物属性
 			zhuci := StoS(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.MainPropID) //主词条
-			zhucitiao := strconv.Itoa(int(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.Value))
+			zhucitiao := Ftoone(alldata.AvatarInfoList[t].EquipList[i].Flat.ReliquaryMainStat.Value)
 			//间隔45,初始145
 			var xx, yy, pingfeng float64 //xx,yy词条相对位置,x,y文本框在全图位置
 			var x, y int
