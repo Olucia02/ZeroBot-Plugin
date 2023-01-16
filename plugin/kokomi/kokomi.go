@@ -37,7 +37,7 @@ func init() { // 主函数
 	en := control.Register("kokomi", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Brief:            "原神面板查询",
-		Help: "原神面板执行方法,第一次需要依次执行\n" +
+		Help: "- kokomi菜单\n" +
 			"- 绑定......(uid)\n" +
 			"- 更新面板\n" +
 			"- 全部面板\n" +
@@ -421,6 +421,7 @@ func init() { // 主函数
 		if err := dc.LoadFontFace(FiFile, 30); err != nil {
 			panic(err)
 		}
+		//计算宽度
 		b, _ := dc.MeasureString("UID:" + suid + "---LV" + strconv.Itoa(alldata.PlayerInfo.ShowAvatarInfoList[t].Level) + "---" + strconv.Itoa(ming))
 		dc.DrawString("UID:"+suid+"---LV"+strconv.Itoa(alldata.PlayerInfo.ShowAvatarInfoList[t].Level)+"---"+strconv.Itoa(ming), 976-b, 180)
 		if err := dc.LoadFontFace(FontFile, 30); err != nil {
