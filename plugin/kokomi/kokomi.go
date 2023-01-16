@@ -378,20 +378,28 @@ func init() { // 主函数
 		// 角色立绘
 		var lihuifile *os.File
 		if allfen/5 > 49.5 || ming > 4 || (lin1 == 10 && lin2 == 10 && lin3 == 10) { //第二立绘判定条件
-			lihuifile, err = os.Open("plugin/kokomi/data/character/" + str + "/imgs/splash.webp")
+			lihuifile, err = os.Open("plugin/kokomi/data/lihui_two/" + str + ".webp")
 			defer lihuifile.Close() // 关闭文件
-			if err != nil {
+			if err != nil {         //失败使用第一立绘
+				lihuifile, err = os.Open("plugin/kokomi/data/lihui_one/" + str + ".webp")
+				defer lihuifile.Close() // 关闭文件
+				if err != nil {         //失败使用默认立绘
+					lihuifile, err = os.Open("plugin/kokomi/data/character/" + str + "/imgs/splash.webp")
+					defer lihuifile.Close() // 关闭文件
+					if err != nil {
+						ctx.SendChain(message.Text("获取立绘失败", err))
+					}
+				}
+			}
+		} else { //第一立绘
+			lihuifile, err = os.Open("plugin/kokomi/data/lihui_one/" + str + ".webp")
+			defer lihuifile.Close() // 关闭文件
+			if err != nil {         //失败使用默认立绘
 				lihuifile, err = os.Open("plugin/kokomi/data/character/" + str + "/imgs/splash.webp")
 				defer lihuifile.Close() // 关闭文件
 				if err != nil {
 					ctx.SendChain(message.Text("获取立绘失败", err))
 				}
-			}
-		} else {
-			lihuifile, err = os.Open("plugin/kokomi/data/character/" + str + "/imgs/splash.webp")
-			defer lihuifile.Close() // 关闭文件
-			if err != nil {
-				ctx.SendChain(message.Text("获取立绘失败", err))
 			}
 		}
 		lihui, err := webp.Decode(lihuifile)
@@ -643,6 +651,7 @@ func init() { // 主函数
 		cl()
 	})
 
+	//删除账号信息,限制群内,权限管理员+
 	en.OnRegex(`^删除账号\s*(\[CQ:at,qq=)?(\d+)?`, zero.OnlyGroup, zero.AdminPermission).SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		sqquid := ctx.State["regex_matched"].([]string)[2] // 获取qquid
 		if sqquid == "" {                                  // user
