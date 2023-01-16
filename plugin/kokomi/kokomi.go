@@ -654,7 +654,7 @@ func init() { // 主函数
 			ctx.SendChain(message.Text("-未找到该账号信息"))
 		} else {
 			//如果删除成功则输出 file remove OK!
-			ctx.SendChain(message.Text("-删除成功", err))
+			ctx.SendChain(message.Text("-删除成功"))
 		}
 	})
 }
