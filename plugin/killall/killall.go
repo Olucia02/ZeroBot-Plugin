@@ -1,4 +1,4 @@
-// Package killall //禁用所有插件
+// Package killall 一键禁用本群所有插件
 package killall
 
 import (
