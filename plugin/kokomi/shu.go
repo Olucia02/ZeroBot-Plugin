@@ -434,26 +434,26 @@ func Findwq(a string) string {
 
 // Findtalent 天赋列表
 func Findtalent() [3]int {
-	var f [3]int
+	var f [2][3]int
 	for k, v := range Role.TalentKey {
 		switch v {
 		case "a":
-			f[0] = k
+			f[0][0] = k
 		case "e":
-			f[1] = k
+			f[0][1] = k
 		case "q":
-			f[2] = k
+			f[0][2] = k
 		}
 	}
 	for m, n := range Role.TalentID {
 		switch n {
-		case f[0]:
-			f[0] = m
-		case f[1]:
-			f[1] = m
-		case f[2]:
-			f[2] = m
+		case f[0][0]:
+			f[1][0] = m
+		case f[0][1]:
+			f[1][1] = m
+		case f[0][2]:
+			f[1][2] = m
 		}
 	}
-	return f
+	return f[1]
 }

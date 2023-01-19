@@ -153,10 +153,12 @@ func init() { // 主函数
 		zz, err := os.ReadFile("plugin/kokomi/data/character/" + str + "/data.json")
 		if err != nil {
 			ctx.SendChain(message.Text("获取角色json失败"))
+			return
 		}
 		err = json.Unmarshal(zz, &Role)
 		if err != nil {
 			ctx.SendChain(message.Text("解析角色json失败"))
+			return
 		}
 		//*******************************************************
 		pro := Role.Elem
