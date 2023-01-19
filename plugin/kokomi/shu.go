@@ -6,9 +6,6 @@ import (
 	"strconv"
 )
 
-// 全局变量减少占用
-var Role Talents
-
 // 圣遗物武器名匹配
 type Fff struct {
 	FfMap map[string]string `json:"zh-CN"`
@@ -433,7 +430,7 @@ func Findwq(a string) string {
 }
 
 // Findtalent 天赋列表
-func Findtalent() [3]int {
+func Findtalent(Role Talents) [3]int {
 	var f [2][3]int
 	for k, v := range Role.TalentKey {
 		switch v {
