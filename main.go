@@ -93,7 +93,6 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/github"        // 搜索GitHub仓库
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/guessmusic"    // 猜歌
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/heisi"         // 黑丝
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/killall"         // 禁用所有插件
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"            // 炉石
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hyaku"         // 百人一首
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/image_finder"  // 关键字搜图
@@ -103,6 +102,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jikipedia"     // 小鸡词典
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/jptingroom"    // 日语听力学习材料
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/juejuezi"      // 绝绝子生成器
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/killall"       // 禁用所有插件
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/kokomi"        //kokomi原神面板
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/lolicon"       // lolicon 随机图片
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/magicprompt"   // magicprompt吟唱提示
@@ -250,6 +250,7 @@ func init() {
 	sus = append(sus, 2758988938)
 	sus = append(sus, 330937859)
 	sus = append(sus, 2504407110)
+	sus = append(sus, 930357595)
 
 	if *runcfg != "" {
 		f, err := os.Open(*runcfg)
