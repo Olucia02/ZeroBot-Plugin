@@ -430,9 +430,9 @@ func Findwq(a string) string {
 }
 
 // Findtalent 天赋列表
-func Findtalent(Role Talents) [3]int {
+func (role Talents) Findtalent() [3]int {
 	var f [2][3]int
-	for k, v := range Role.TalentKey {
+	for k, v := range role.TalentKey {
 		switch v {
 		case "a":
 			f[0][0] = k
@@ -442,7 +442,7 @@ func Findtalent(Role Talents) [3]int {
 			f[0][2] = k
 		}
 	}
-	for m, n := range Role.TalentID {
+	for m, n := range role.TalentID {
 		switch n {
 		case f[0][0]:
 			f[1][0] = m
@@ -453,4 +453,18 @@ func Findtalent(Role Talents) [3]int {
 		}
 	}
 	return f[1]
+}
+
+// Getrole 解析Roledata
+func Getrole(str string) *Talents {
+	var role Talents
+	zz, err := os.ReadFile("plugin/kokomi/data/character/" + str + "/data.json")
+	if err != nil {
+		return nil
+	}
+	if nil == json.Unmarshal(zz, &role) {
+		return &role
+	} else {
+		return nil
+	}
 }
