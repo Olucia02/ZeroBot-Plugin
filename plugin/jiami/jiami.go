@@ -28,7 +28,7 @@ type nmd struct { // struct解析格式大概是
 func init() { // 主函数
 	en := control.Register("jiami", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
-		Brief:            "兽语加解密",
+		Brief:            "兽语|喵喵加解密",
 		Help: "兽语|喵喵加解密\n" +
 			"- 兽语|喵喵加密xxx\n- 兽语|喵喵解密xxx",
 	})
@@ -76,20 +76,19 @@ func (r *nmd) jsontos(k string) {
 	if k == ">" || k == "<" {
 		r.Data.Message = replace(r.Data.Message, k)
 	}
-	return
 }
 
 // 转字符
 func replace(s, k string) string {
 	switch k {
 	case ">":
-		s = strings.Replace(s, "嗷", "喵", -1)
-		s = strings.Replace(s, "啊", "苗", -1)
-		s = strings.Replace(s, "呜", "瞄", -1)
+		s = strings.ReplaceAll(s, "嗷", "喵")
+		s = strings.ReplaceAll(s, "啊", "苗")
+		s = strings.ReplaceAll(s, "呜", "瞄")
 	case "<":
-		s = strings.Replace(s, "喵", "嗷", -1)
-		s = strings.Replace(s, "苗", "啊", -1)
-		s = strings.Replace(s, "瞄", "呜", -1)
+		s = strings.ReplaceAll(s, "喵", "嗷")
+		s = strings.ReplaceAll(s, "苗", "啊")
+		s = strings.ReplaceAll(s, "瞄", "呜")
 	}
 	return s
 }
