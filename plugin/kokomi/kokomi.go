@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"unicode/utf8"
+	//"unicode/utf8"
 
 	"github.com/Coloured-glaze/gg"
 	"github.com/FloatTech/floatbox/img/writer"
@@ -49,7 +49,7 @@ func init() { // 主函数
 			"- XX面板\n" +
 			"- 删除账号[@xx]",
 	})
-	en.OnRegex(`(.*)面板\s*(\[CQ:at,qq=)?(\d+)?(.*)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+	en.OnRegex(`#?＃?(.*)面板\s*(\[CQ:at,qq=)?(\d+)?(.*)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		var wifeid, qquid int64
 		var allfen float64 = 0.00
 		sqquid := ctx.State["regex_matched"].([]string)[3] // 获取第三者qquid
@@ -73,7 +73,7 @@ func init() { // 主函数
 			return
 		}
 		//############################################################判断数据更新,逻辑原因不能合并进switch
-		if str == "更新" || str == "#更新" {
+		if str == "更新" {
 			es, err := web.GetData(fmt.Sprintf(url, suid)) // 网站返回结果
 			if err != nil {
 				time.Sleep(500 * time.Microsecond)            //0.5s
@@ -86,7 +86,7 @@ func init() { // 主函数
 			// 创建存储文件,路径plugin/kokomi/data/js
 			file, _ := os.OpenFile("plugin/kokomi/data/js/"+suid+".kokomi", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 			_, _ = file.Write(es)
-			ctx.SendChain(message.Text("-获取角色面板成功" + Postfix + "\n-请发送 全部面板 查看已展示角色" + Postfix))
+			ctx.SendChain(message.Text("-获取角色面板成功" + "\n-请发送 全部面板 查看已展示角色" + Postfix))
 			file.Close()
 			return
 		}
@@ -113,7 +113,7 @@ func init() { // 主函数
 		wife := GetWifeOrWq("wife")
 
 		switch str {
-		case "全部", "全部角色", "#全部":
+		case "全部", "全部角色":
 			var msg strings.Builder
 			msg.WriteString("您的展示角色为:\n")
 			for i := 0; i < len(alldata.PlayerInfo.ShowAvatarInfoList); i++ {
@@ -131,9 +131,9 @@ func init() { // 主函数
 			return
 		default: // 角色名解析为id
 			//排除#
-			if str[0:1] == "#" {
-				str = str[1:]
-			}
+			//if string(([]rune(str))[0]) == "＃" || string(([]rune(str))[0]) == "#" {
+			//	str = string([]rune(str))[1:]
+			//}
 			//匹配简称/外号
 			swifeid := wife.Findnames(str)
 			if swifeid == "" {
@@ -454,14 +454,15 @@ func init() { // 主函数
 		//syy := lihui.Bounds().Size().Y
 		lihui = resize.Resize(0, 880, lihui, resize.Bilinear)
 		sxx := lihui.Bounds().Size().X
-		dc.DrawImage(lihui, int(260-float64(sxx)/2), 0)
+		dc.DrawImage(lihui, int(275-float64(sxx)/2), 0)
 
 		//角色名字
 		if err := dc.LoadFontFace(NameFont, 80); err != nil {
 			panic(err)
 		}
-		namelen := utf8.RuneCountInString(str)
-		dc.DrawString(str, float64(1050-namelen*90), float64(130))
+		//namelen := utf8.RuneCountInString(str)
+		//dc.DrawString(str, float64(1050-namelen*90), float64(130))
+		dc.DrawStringAnchored(str, 1020, 130, 1, 0)
 		// 好感度,uid
 		if err := dc.LoadFontFace(FontFile, 30); err != nil {
 			panic(err)
@@ -469,7 +470,7 @@ func init() { // 主函数
 
 		//好感度位置
 		dc.DrawString("好感度"+strconv.Itoa(alldata.AvatarInfoList[t].FetterInfo.ExpLevel), 20, 910)
-		dc.DrawString("昵称:"+alldata.PlayerInfo.Nickname, 700, 40)
+		dc.DrawStringAnchored("昵称:"+alldata.PlayerInfo.Nickname, 1020, 40, 1, 0)
 		if err := dc.LoadFontFace(FiFile, 30); err != nil {
 			panic(err)
 		}
@@ -667,7 +668,7 @@ func init() { // 主函数
 	})
 
 	// 绑定uid
-	en.OnRegex(`^(#)?绑定\s*(uid)?(\d+)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+	en.OnRegex(`^(#|＃)?绑定\s*(uid)?(\d+)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		suid := ctx.State["regex_matched"].([]string)[3] // 获取uid
 		int64uid, err := strconv.ParseInt(suid, 10, 64)
 		if suid == "" || int64uid < 100000000 || int64uid > 1000000000 || err != nil {
