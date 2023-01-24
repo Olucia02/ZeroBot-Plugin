@@ -61,7 +61,7 @@ func init() { // 插件主体
 			default:
 				ctx.SendChain(message.Text(
 					[]string{
-						"大变态，吃", nickname, "一拳！",
+						"大变态，吃" + nickname + "一拳！",
 						nickname + "生气了！ヾ(≧へ≦)〃",
 					}[rand.Intn(2)]))
 				ctx.SetGroupBan(
