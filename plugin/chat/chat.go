@@ -53,9 +53,17 @@ func init() { // 插件主体
 			case poke.Load(ctx.Event.GroupID).Acquire():
 				// 5分钟共8块命令牌 一次消耗1块命令牌
 				time.Sleep(time.Second * 1)
-				ctx.SendChain(message.Text("连", nickname, "都要戳的人，最讨厌了！"))
+				ctx.SendChain(message.Text(
+					[]string{
+						"连" + nickname + "都要戳的人，最讨厌了！",
+						"再戳" + nickname + "......，" + nickname + "...就生气了!",
+					}[rand.Intn(2)]))
 			default:
-				ctx.SendChain(message.Text("大变态，吃", nickname, "一拳！"))
+				ctx.SendChain(message.Text(
+					[]string{
+						"大变态，吃", nickname, "一拳！",
+						nickname + "生气了！ヾ(≧へ≦)〃",
+					}[rand.Intn(2)]))
 				ctx.SetGroupBan(
 					ctx.Event.GroupID,
 					ctx.Event.UserID, // 要禁言的人的qq
