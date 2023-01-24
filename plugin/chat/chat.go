@@ -55,7 +55,7 @@ func init() { // 插件主体
 				time.Sleep(time.Second * 1)
 				ctx.SendChain(message.Text("连", nickname, "都要戳的人，最讨厌了！"))
 			default:
-				ctx.SendChain(message.Text("大变态,吃", nickname, "一拳！"))
+				ctx.SendChain(message.Text("大变态，吃", nickname, "一拳！"))
 				ctx.SetGroupBan(
 					ctx.Event.GroupID,
 					ctx.Event.UserID, // 要禁言的人的qq
