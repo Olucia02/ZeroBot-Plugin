@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	poke   = rate.NewManager[int64](time.Minute*5, 8) // 戳一戳
+	poke   = rate.NewManager[int64](time.Minute*5, 11) // 戳一戳
 	engine = control.Register("chat", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Brief:            "基础反应, 群空调",
@@ -42,16 +42,25 @@ func init() { // 插件主体
 		Handle(func(ctx *zero.Ctx) {
 			var nickname = zero.BotConfig.NickName[0]
 			switch {
-			case poke.Load(ctx.Event.GroupID).AcquireN(3):
+			case poke.Load(ctx.Event.GroupID).AcquireN(4):
 				// 5分钟共8块命令牌 一次消耗3块命令牌
 				time.Sleep(time.Second * 1)
 				ctx.SendChain(message.Text("请不要戳", nickname, " >_<"))
+			case poke.Load(ctx.Event.GroupID).AcquireN(2):
+				// 5分钟共8块命令牌 一次消耗1块命令牌
+				time.Sleep(time.Second * 1)
+				ctx.SendChain(message.Text("戳", nickname, "的人是大变态！"))
 			case poke.Load(ctx.Event.GroupID).Acquire():
 				// 5分钟共8块命令牌 一次消耗1块命令牌
 				time.Sleep(time.Second * 1)
-				ctx.SendChain(message.Text("喂(#`O′) 戳", nickname, "干嘛！"))
+				ctx.SendChain(message.Text("连", nickname, "都要戳的人，最讨厌了！"))
 			default:
-				// 频繁触发，不回复
+				ctx.SendChain(message.Text("大变态,吃", nickname, "一拳！"))
+				ctx.SetGroupBan(
+					ctx.Event.GroupID,
+					ctx.Event.UserID, // 要禁言的人的qq
+					60,               // 要禁言的时间（1分钟）
+				)
 			}
 		})
 	// 群空调
