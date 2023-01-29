@@ -615,5 +615,4 @@ func Sywsuit(syws []string) string {
 		return c0 + "2"
 	}
 	return "+"
-
 }
