@@ -14,25 +14,23 @@ import (
 const (
 	// k_lelaer_damage = "https://api.lelaer.com/ys/getDamageResult.php"
 	// k_lelaer_team   = "https://api.lelaer.com/ys/getTeamResult.php"
-	k_lelaer_sum = "https://api.lelaer.com/ys/getSumComment.php"
+	kLelaerSum = "https://api.lelaer.com/ys/getSumComment.php"
 )
 
-func (ndata Data) GetSumComment(uid string, wife FindMap) ([]byte, error) {
+func (ndata Data) GetSumComment(uid string, wife FindMap) (d []byte, err error) {
 	p, err := ndata.transToTeyvat(uid, wife)
 	if err != nil {
 		return nil, err
 	}
-	d, _ := json.Marshal(p)
-	if d, err = web.RequestDataWith(web.NewTLS12Client(),
-		k_lelaer_sum,
+	d, _ = json.Marshal(p)
+	d, err = web.RequestDataWith(web.NewTLS12Client(),
+		kLelaerSum,
 		"POST",
 		"https://servicewechat.com/wx2ac9dce11213c3a8/192/page-frame.html",
 		"Mozilla/5.0 (Linux; Android 12; SM-G977N Build/SP1A.210812.016; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4375 MMWEBSDK/20221011 Mobile Safari/537.36 MMWEBID/4357 MicroMessenger/8.0.30.2244(0x28001E44) WeChat/arm64 Weixin GPVersion/1 NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android",
 		bytes.NewReader(d),
-	); err != nil {
-		return nil, fmt.Errorf("出现错误捏：%v", err)
-	}
-	return d, nil
+	)
+	return
 }
 
 // 角色数据转换为 Teyvat Helper 请求格式
@@ -123,70 +121,73 @@ func (ndata Data) transToTeyvat(uid string, wife FindMap) (*Teyvat, error) {
 		if n == 0 {
 			return nil, k_error_sys
 		}
-		equip_last := v.EquipList[n-1]
-		for m := range equip_last.Weapon.AffixMap {
+		equipLast := v.EquipList[n-1]
+		for m := range equipLast.Weapon.AffixMap {
 			n = m
 		}
-		affix := equip_last.Weapon.AffixMap[n] + 1
+		affix := equipLast.Weapon.AffixMap[n] + 1
 
 		// 武器名
-		wqname := reliquary.WQ[equip_last.Flat.NameTextHash]
+		wqname := reliquary.WQ[equipLast.Flat.NameTextHash]
 		if wqname == "" {
 			return nil, k_error_sys
 		}
 
-		teyvat_data := TeyvatData{
+		teyvatData := TeyvatData{
 			Uid:         uid,
 			Server:      s,
 			UserLevel:   ndata.PlayerInfo.Level,
 			Role:        name,
 			Cons:        cons,
 			Weapon:      wqname,
-			WeaponLevel: equip_last.Weapon.Level,
+			WeaponLevel: equipLast.Weapon.Level,
 			WeaponClass: fmt.Sprintf("精炼%d阶", affix),
 			Fetter:      v.FetterInfo.ExpLevel,
 		}
 
 		for _, item := range ndata.PlayerInfo.ShowAvatarInfoList {
 			if item.AvatarID == v.AvatarID {
-				teyvat_data.Level = item.Level
+				teyvatData.Level = item.Level
 				break
 			}
 		}
 
 		hp := v.FightPropMap.Num2000           //生命
 		crit := v.FightPropMap.Num20 * 100     //暴击
-		crit_dmg := v.FightPropMap.Num22 * 100 //爆伤
+		critDmg := v.FightPropMap.Num22 * 100  //爆伤
 		recharge := v.FightPropMap.Num23 * 100 //充能
 
-		physical_dmg := v.FightPropMap.Num30 * 100 // 物理加伤
-		fire_dmg := v.FightPropMap.Num40 * 100     // 火元素加伤
-		thunder_dmg := v.FightPropMap.Num41 * 100  // 雷元素加伤
-		water_dmg := v.FightPropMap.Num42 * 100    // 水元素加伤
-		wind_dmg := v.FightPropMap.Num44 * 100     // 风元素加伤
-		rock_dmg := v.FightPropMap.Num45 * 100     // 岩元素加伤
-		ice_dmg := v.FightPropMap.Num46 * 100      // 冰元素加伤
-		grass_dmg := v.FightPropMap.Num43 * 100    // 草元素加伤
+		physicalDmg := v.FightPropMap.Num30 * 100 // 物理加伤
+		fireDmg := v.FightPropMap.Num40 * 100     // 火元素加伤
+		thunderDmg := v.FightPropMap.Num41 * 100  // 雷元素加伤
+		waterDmg := v.FightPropMap.Num42 * 100    // 水元素加伤
+		windDmg := v.FightPropMap.Num44 * 100     // 风元素加伤
+		rockDmg := v.FightPropMap.Num45 * 100     // 岩元素加伤
+		iceDmg := v.FightPropMap.Num46 * 100      // 冰元素加伤
+		grassDmg := v.FightPropMap.Num43 * 100    // 草元素加伤
 
 		// dataFix from https://github.com/yoimiya-kokomi/miao-plugin/blob/ac27075276154ef5a87a458697f6e5492bd323bd/components/profile-data/enka-data.js#L186  # noqa: E501
-		if name == "雷电将军" {
-			thunder_dmg = max(0, thunder_dmg-(recharge-100)*0.4) // 雷元素伤害加成
-		} else if name == "莫娜" {
-			water_dmg = max(0, water_dmg-recharge*0.2) // 水元素伤害加成
-		} else if name == "妮露" && cons == 6 {
-			crit = max(5, crit-min(30, hp*0.6))          // 暴击率
-			crit_dmg = max(50, crit_dmg-min(60, hp*1.2)) // 暴击伤害
+		switch name {
+		case "雷电将军":
+			thunderDmg = max(0, thunderDmg-(recharge-100)*0.4) // 雷元素伤害加成
+		case "莫娜":
+			waterDmg = max(0, waterDmg-recharge*0.2) // 水元素伤害加成
+		case "妮露":
+			if cons == 6 {
+				crit = max(5, crit-min(30, hp*0.6))        // 暴击率
+				critDmg = max(50, critDmg-min(60, hp*1.2)) // 暴击伤害
+			}
 		}
 		for _, item := range []string{"息灾", "波乱月白经津", "雾切之回光", "猎人之径"} {
 			if item == wqname {
 				z := 12 + 12*(float64(affix)-1)/4
-				fire_dmg = max(0, fire_dmg-z)       // 火元素加伤
-				thunder_dmg = max(0, thunder_dmg-z) // 雷元素加伤
-				water_dmg = max(0, water_dmg-z)     // 水元素加伤
-				wind_dmg = max(0, wind_dmg-z)       // 风元素加伤
-				rock_dmg = max(0, rock_dmg-z)       // 岩元素加伤
-				ice_dmg = max(0, ice_dmg-z)         // 冰元素加伤
-				grass_dmg = max(0, grass_dmg-z)     // 草元素加伤
+				fireDmg = max(0, fireDmg-z)       // 火元素加伤
+				thunderDmg = max(0, thunderDmg-z) // 雷元素加伤
+				waterDmg = max(0, waterDmg-z)     // 水元素加伤
+				windDmg = max(0, windDmg-z)       // 风元素加伤
+				rockDmg = max(0, rockDmg-z)       // 岩元素加伤
+				iceDmg = max(0, iceDmg-z)         // 冰元素加伤
+				grassDmg = max(0, grassDmg-z)     // 草元素加伤
 				break
 			}
 		}
@@ -200,16 +201,16 @@ func (ndata Data) transToTeyvat(uid string, wife FindMap) (*Teyvat, error) {
 		}
 		// 天赋等级
 		talentid := role.GetTalentId()
-		teyvat_data.Ability1 = v.SkillLevelMap[talentid[0]]
-		teyvat_data.Ability2 = v.SkillLevelMap[talentid[1]]
-		teyvat_data.Ability3 = v.SkillLevelMap[talentid[2]]
+		teyvatData.Ability1 = v.SkillLevelMap[talentid[0]]
+		teyvatData.Ability2 = v.SkillLevelMap[talentid[1]]
+		teyvatData.Ability3 = v.SkillLevelMap[talentid[2]]
 		ming := len(v.TalentIDList) // 命之座
 		// 天赋等级修复
 		if ming >= role.TalentCons.E {
-			teyvat_data.Ability2 += 3
+			teyvatData.Ability2 += 3
 		}
 		if ming >= role.TalentCons.Q {
-			teyvat_data.Ability3 += 3
+			teyvatData.Ability3 += 3
 		}
 
 		// 圣遗物数据
@@ -225,11 +226,11 @@ func (ndata Data) transToTeyvat(uid string, wife FindMap) (*Teyvat, error) {
 			sywallname := syw.Names(wqname)[i] // 圣遗物name
 			// fmt.Println(wqname, sywallname)
 
-			var main_value any
+			var mainValue any
 			if s = Stofen(equip.Flat.ReliquaryMainStat.MainPropID); s == "" {
-				main_value = int(0.5 + equip.Flat.ReliquaryMainStat.Value)
+				mainValue = int(0.5 + equip.Flat.ReliquaryMainStat.Value)
 			} else {
-				main_value = Ftoone(equip.Flat.ReliquaryMainStat.Value) + s
+				mainValue = Ftoone(equip.Flat.ReliquaryMainStat.Value) + s
 			}
 
 			detail := TeyvatDetail{
@@ -237,7 +238,7 @@ func (ndata Data) transToTeyvat(uid string, wife FindMap) (*Teyvat, error) {
 				Type:      GetEquipType(equip.Flat.EquipType),
 				Level:     equip.Reliquary.Level - 1,
 				MainTips:  GetAppendProp(equip.Flat.ReliquaryMainStat.MainPropID),
-				MainValue: main_value,
+				MainValue: mainValue,
 			}
 			for i, stats := range equip.Flat.ReliquarySubStats {
 				s = fmt.Sprintf("%s+%v%s", GetAppendProp(stats.SubPropID), stats.Value, Stofen(stats.SubPropID))
@@ -252,34 +253,32 @@ func (ndata Data) transToTeyvat(uid string, wife FindMap) (*Teyvat, error) {
 					detail.Tips4 = s
 				}
 			}
-			teyvat_data.Detail = append(teyvat_data.Detail, detail)
+			teyvatData.Detail = append(teyvatData.Detail, detail)
 		}
 
-		teyvat_data.Artifacts = Sywsuit(syws)
+		teyvatData.Artifacts = Sywsuit(syws)
 
-		teyvat_data.HP = int(0.5 + hp)
-		teyvat_data.BaseHP = int(0.5 + v.FightPropMap.Num1)       // 基础生命值
-		teyvat_data.Attack = int(0.5 + v.FightPropMap.Num2001)    // 攻击
-		teyvat_data.BaseAttack = int(0.5 + v.FightPropMap.Num4)   // 基础攻击力
-		teyvat_data.Defend = int(0.5 + v.FightPropMap.Num2002)    // 防御
-		teyvat_data.BaseDefend = int(0.5 + v.FightPropMap.Num7)   // 基础防御力
-		teyvat_data.Element = int(0.5 + v.FightPropMap.Num28)     // 元素精通
-		teyvat_data.Heal = Ftoone(v.FightPropMap.Num26*100) + "%" // 治疗加成
-		teyvat_data.Crit = Ftoone(crit) + "%"
-		teyvat_data.CritDmg = Ftoone(crit_dmg) + "%"
-		teyvat_data.Recharge = Ftoone(recharge) + "%"
-		teyvat_data.FireDmg = Ftoone(fire_dmg) + "%"
-		teyvat_data.WaterDmg = Ftoone(water_dmg) + "%"
-		teyvat_data.ThunderDmg = Ftoone(thunder_dmg) + "%"
-		teyvat_data.WindDmg = Ftoone(wind_dmg) + "%"
-		teyvat_data.IceDmg = Ftoone(ice_dmg) + "%"
-		teyvat_data.RockDmg = Ftoone(rock_dmg) + "%"
-		teyvat_data.GrassDmg = Ftoone(grass_dmg) + "%"
-		teyvat_data.PhysicalDmg = Ftoone(physical_dmg) + "%"
+		teyvatData.HP = int(0.5 + hp)
+		teyvatData.BaseHP = int(0.5 + v.FightPropMap.Num1)       // 基础生命值
+		teyvatData.Attack = int(0.5 + v.FightPropMap.Num2001)    // 攻击
+		teyvatData.BaseAttack = int(0.5 + v.FightPropMap.Num4)   // 基础攻击力
+		teyvatData.Defend = int(0.5 + v.FightPropMap.Num2002)    // 防御
+		teyvatData.BaseDefend = int(0.5 + v.FightPropMap.Num7)   // 基础防御力
+		teyvatData.Element = int(0.5 + v.FightPropMap.Num28)     // 元素精通
+		teyvatData.Heal = Ftoone(v.FightPropMap.Num26*100) + "%" // 治疗加成
+		teyvatData.Crit = Ftoone(crit) + "%"
+		teyvatData.CritDmg = Ftoone(critDmg) + "%"
+		teyvatData.Recharge = Ftoone(recharge) + "%"
+		teyvatData.FireDmg = Ftoone(fireDmg) + "%"
+		teyvatData.WaterDmg = Ftoone(waterDmg) + "%"
+		teyvatData.ThunderDmg = Ftoone(thunderDmg) + "%"
+		teyvatData.WindDmg = Ftoone(windDmg) + "%"
+		teyvatData.IceDmg = Ftoone(iceDmg) + "%"
+		teyvatData.RockDmg = Ftoone(rockDmg) + "%"
+		teyvatData.GrassDmg = Ftoone(grassDmg) + "%"
+		teyvatData.PhysicalDmg = Ftoone(physicalDmg) + "%"
 
-		// fmt.Println(teyvat_data)
-
-		res.Role = append(res.Role, teyvat_data) // 单个角色最终结果
+		res.Role = append(res.Role, teyvatData) // 单个角色最终结果
 	}
 	return res, nil
 }
