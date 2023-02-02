@@ -283,9 +283,8 @@ func init() {
 		Latency:        time.Duration(*late) * time.Millisecond,
 		MaxProcessTime: time.Duration(*maxpt) * time.Minute,
 		//Driver:         []zero.Driver{config.W[0]},
-		Driver: []zero.Driver{config.W[0],
-			driver.NewWebSocketClient("ws://127.0.0.1:6701", ""),
-		},
+		Driver: []zero.Driver{config.W[0]}, //	driver.NewWebSocketClient("ws://127.0.0.1:6701", ""),
+
 	}
 
 	if *save != "" {
