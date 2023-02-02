@@ -6,8 +6,8 @@ require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/FloatTech/AnimeAPI v1.6.1-0.20230111055153-4d8aebd3eab9
-	github.com/FloatTech/floatbox v0.0.0-20230111053652-a03d6334fadf
-	github.com/FloatTech/rendercard v0.0.3
+	github.com/FloatTech/floatbox v0.0.0-20230130095057-3d1da721425e
+	github.com/FloatTech/rendercard v0.0.8
 	github.com/FloatTech/sqlite v1.5.7
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20230130095145-714ad318cd52
@@ -16,6 +16,7 @@ require (
 	github.com/RomiChan/websocket v1.4.3-0.20220227141055-9b2c6168c9c5
 	github.com/antchfx/htmlquery v1.2.5
 	github.com/corona10/goimagehash v1.1.0
+	github.com/davidscholberg/go-durationfmt v0.0.0-20170122144659-64843a2083d3
 	github.com/disintegration/imaging v1.6.2
 	github.com/fumiama/ahsai v0.1.0
 	github.com/fumiama/cron v1.3.0
