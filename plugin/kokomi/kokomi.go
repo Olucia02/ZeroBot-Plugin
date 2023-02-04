@@ -125,7 +125,7 @@ func init() { // 主函数
 						msg.WriteByte('\n')
 					}
 				}
-				dam_a, err = ndata.GetSumComment(suid, wife)
+				dam_a, err = thisdata.GetSumComment(suid, wife)
 				if err != nil {
 					ctx.SendChain(message.Text("-获取伤害数据失败"+Config.Postfix, err))
 				}
@@ -805,7 +805,7 @@ func init() { // 主函数
 					msg.WriteByte('\n')
 				}
 			}
-			dam_a, err = ndata.GetSumComment(suid, wife)
+			dam_a, err = thisdata.GetSumComment(suid, wife)
 			if err != nil {
 				ctx.SendChain(message.Text("-获取伤害数据失败"+Config.Postfix, err))
 			}

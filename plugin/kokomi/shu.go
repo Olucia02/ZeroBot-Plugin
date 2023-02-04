@@ -124,37 +124,37 @@ func StoS(val string) string {
 
 func GetAppendProp(v string) string {
 	switch v {
-	case "FIGHT_PROP_HP", "FIGHT_PROP_HP_PERCENT":
+	case "FIGHT_PROP_HP", "FIGHT_PROP_HP_PERCENT", "小生命", "大生命":
 		return "生命值"
-	case "FIGHT_PROP_ATTACK", "FIGHT_PROP_ATTACK_PERCENT":
+	case "FIGHT_PROP_ATTACK", "FIGHT_PROP_ATTACK_PERCENT", "小攻击", "大攻击":
 		return "攻击力"
-	case "FIGHT_PROP_DEFENSE", "FIGHT_PROP_DEFENSE_PERCENT":
+	case "FIGHT_PROP_DEFENSE", "FIGHT_PROP_DEFENSE_PERCENT", "小防御", "大防御":
 		return "防御力"
-	case "FIGHT_PROP_CRITICAL":
+	case "FIGHT_PROP_CRITICAL", "暴击率":
 		return "暴击率"
-	case "FIGHT_PROP_CRITICAL_HURT":
+	case "FIGHT_PROP_CRITICAL_HURT", "暴击伤害":
 		return "暴击伤害"
-	case "FIGHT_PROP_CHARGE_EFFICIENCY":
+	case "FIGHT_PROP_CHARGE_EFFICIENCY", "元素充能":
 		return "元素充能效率"
-	case "FIGHT_PROP_HEAL_ADD":
+	case "FIGHT_PROP_HEAL_ADD", "治疗加成":
 		return "治疗加成"
-	case "FIGHT_PROP_ELEMENT_MASTERY":
+	case "FIGHT_PROP_ELEMENT_MASTERY", "元素精通":
 		return "元素精通"
-	case "FIGHT_PROP_PHYSICAL_ADD_HURT":
+	case "FIGHT_PROP_PHYSICAL_ADD_HURT", "物理加伤":
 		return "物理伤害加成"
-	case "FIGHT_PROP_FIRE_ADD_HURT":
+	case "FIGHT_PROP_FIRE_ADD_HURT", "火元素加伤":
 		return "火元素伤害加成"
-	case "FIGHT_PROP_ELEC_ADD_HURT":
+	case "FIGHT_PROP_ELEC_ADD_HURT", "雷元素加伤":
 		return "雷元素伤害加成"
-	case "FIGHT_PROP_WATER_ADD_HURT":
+	case "FIGHT_PROP_WATER_ADD_HURT", "水元素加伤":
 		return "水元素伤害加成"
-	case "FIGHT_PROP_GRASS_ADD_HURT":
+	case "FIGHT_PROP_GRASS_ADD_HURT", "草元素加伤":
 		return "草元素伤害加成"
-	case "FIGHT_PROP_WIND_ADD_HURT":
+	case "FIGHT_PROP_WIND_ADD_HURT", "风元素加伤":
 		return "风元素伤害加成"
-	case "FIGHT_PROP_ROCK_ADD_HURT":
+	case "FIGHT_PROP_ROCK_ADD_HURT", "岩元素加伤":
 		return "岩元素伤害加成"
-	case "FIGHT_PROP_ICE_ADD_HURT":
+	case "FIGHT_PROP_ICE_ADD_HURT", "冰元素加伤":
 		return "冰元素伤害加成"
 	}
 	return ""
@@ -162,15 +162,15 @@ func GetAppendProp(v string) string {
 
 func GetEquipType(v string) string {
 	switch v {
-	case "EQUIP_BRACER":
+	case "EQUIP_BRACER", "0":
 		return "生之花"
-	case "EQUIP_NECKLACE":
+	case "EQUIP_NECKLACE", "1":
 		return "死之羽"
-	case "EQUIP_SHOES":
+	case "EQUIP_SHOES", "2":
 		return "时之沙"
-	case "EQUIP_RING":
+	case "EQUIP_RING", "3":
 		return "空之杯"
-	case "EQUIP_DRESS":
+	case "EQUIP_DRESS", "4":
 		return "理之冠"
 	}
 	return ""
