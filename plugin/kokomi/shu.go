@@ -643,7 +643,7 @@ func (n Data) ConvertData() (Thisdata, error) {
 func (t *Thisdata) MergeFile(suid string) error {
 	tx, err := os.ReadFile("plugin/kokomi/data/js/" + suid + ".kokomi")
 	if err != nil {
-		return errors.New("1")
+		return nil
 	}
 	// 解析
 	var alldata Thisdata
