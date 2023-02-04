@@ -638,3 +638,33 @@ func (n Data) ConvertData() (Thisdata, error) {
 	}
 	return *t, nil
 }
+
+// 合并映射
+func (t *Thisdata) MergeFile(suid string) error {
+	tx, err := os.ReadFile("plugin/kokomi/data/js/" + suid + ".kokomi")
+	if err != nil {
+		return errors.New("1")
+	}
+	// 解析
+	var alldata Thisdata
+	err = json.Unmarshal(tx, &alldata)
+	if err != nil {
+		return errors.New("2")
+	}
+	for i := 0; i < len(alldata.Chars); i++ {
+	asdf:
+		for l := 0; l < len(t.Chars); l++ {
+			if alldata.Chars[i].Name == t.Chars[l].Name {
+				i++
+				if i == len(alldata.Chars)-1 {
+					return nil
+				} else {
+					goto asdf
+				}
+			}
+		}
+		//未找到相同
+		t.Chars[len(t.Chars)] = alldata.Chars[i]
+	}
+	return nil
+}
