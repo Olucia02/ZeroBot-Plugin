@@ -7,6 +7,7 @@ require (
 	github.com/Coloured-glaze/gg v1.3.4
 	github.com/FloatTech/AnimeAPI v1.6.1-0.20230111055153-4d8aebd3eab9
 	github.com/FloatTech/floatbox v0.0.0-20230130095057-3d1da721425e
+	github.com/FloatTech/gg v1.0.0
 	github.com/FloatTech/rendercard v0.0.8
 	github.com/FloatTech/sqlite v1.5.7
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
