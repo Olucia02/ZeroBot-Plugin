@@ -499,9 +499,9 @@ func botrungroup() (string, error) {
 		return true
 	})
 	t.WriteString(" ] | 接收消息 ")
-	t.WriteString(strconv.Itoa(zero.GetMessageNum("Re")))
+	t.WriteString(strconv.FormatInt(zero.GetMessageNum("Re"), 10))
 	t.WriteString(" | 发送消息 ")
-	t.WriteString(strconv.Itoa(zero.GetMessageNum("sent")))
+	t.WriteString(strconv.FormatInt(zero.GetMessageNum("sent"), 10))
 	return t.String(), nil
 }
 
