@@ -237,6 +237,14 @@ func drawstatus(m *ctrl.Control[*zero.Ctx], uid int64, botname string) (sendimg 
 		fw, _ = titlecard.MeasureString(bs)
 
 		titlecard.DrawStringAnchored(bs, float64(titlecardh)+fw/2, float64(titlecardh)*(0.5+0.5/2), 0.5, 0.5)
+
+		thr, err := botrungroup()
+		if err != nil {
+			return
+		}
+		fw, _ = titlecard.MeasureString(thr)
+
+		titlecard.DrawStringAnchored(thr, float64(titlecardh)+fw/2, float64(titlecardh)*(0.5+0.75/2), 0.5, 0.5)
 		titleimg = rendercard.Fillet(titlecard.Image(), 16)
 	}()
 	go func() {
@@ -478,6 +486,26 @@ func botstatus() (string, error) {
 	t.WriteString(runtime.Version())
 	t.WriteString(" | ")
 	t.WriteString(cases.Title(language.English).String(hostinfo.OS))
+	return t.String(), nil
+}
+
+func botrungroup() (string, error) {
+	i := 0
+	t := &strings.Builder{}
+	t.WriteString("加入群聊数 ")
+	t.WriteString("[ ")
+	zero.RangeBot(func(id int64, ctx *zero.Ctx) bool {
+		if i > 0 {
+			t.WriteString(" | ")
+		}
+		t.WriteString(strconv.Itoa(len(ctx.GetGroupList().Array())))
+		i++
+		return true
+	})
+	t.WriteString(" ] | 接收消息 ")
+	t.WriteString(strconv.Itoa(zero.GetMessageNum("Re")))
+	t.WriteString(" | 发送消息 ")
+	t.WriteString(strconv.Itoa(zero.GetMessageNum("sent")))
 	return t.String(), nil
 }
 
