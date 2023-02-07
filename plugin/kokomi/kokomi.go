@@ -467,7 +467,6 @@ func init() { // 主函数
 			err = json.Unmarshal(damfile, &roleDam)
 			if err != nil {
 				ok = 1
-				ctx.SendChain(message.Text("ERROR:", err))
 			}
 		}
 		//绘图区
