@@ -48,6 +48,10 @@ func init() {
 		Handle(func(ctx *zero.Ctx) {
 			text := ctx.State["regex_matched"].([]string)[2]
 			str := ctx.State["regex_matched"].([]string)[1]
+			if str == "派蒙" {
+				ctx.SendChain(message.Record(fmt.Sprintf(cnapi, str, url.QueryEscape(text))))
+				return
+			}
 			wife := kokomi.GetWifeOrWq("wife")
 			swifeid := wife.Findnames(str)
 			if swifeid == "" {
