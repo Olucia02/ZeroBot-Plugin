@@ -1011,6 +1011,11 @@ func init() { // 主函数
 	success:
 		Success(ctx, "切换api")
 	})
+
+	//更新全部面板
+	en.OnFullMatch("更新全部信息", zero.SuperUserPermission).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+
+	})
 }
 
 // Error 尚未启用
