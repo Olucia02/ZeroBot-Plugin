@@ -5,8 +5,8 @@ import (
 	"image/color"
 	"math"
 
-	"github.com/fogleman/gg"//原版gg
-	//"github.com/FloatTech/gg"
+	//"github.com/fogleman/gg"//原版gg
+	"github.com/FloatTech/gg"
 )
 
 // Polygon 画多边形
