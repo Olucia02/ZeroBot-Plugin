@@ -487,6 +487,8 @@ type status struct {
 func basicstate() (stateinfo [3]*status, err error) {
 	percent, err := cpu.Percent(time.Second, false)
 	if err != nil {
+		return
+	}
 	cpuinfo, err := cpu.Info()
 	if err != nil {
 		return

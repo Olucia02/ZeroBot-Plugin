@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Coloured-glaze/gg"
-	"github.com/FloatTech/floatbox/img/writer"
 	"github.com/FloatTech/floatbox/web"
+	"github.com/FloatTech/imgfactory"
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
+	"github.com/fogleman/gg"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
@@ -150,8 +150,11 @@ func init() {
 			}*/
 			//	dc.DrawImage(ii, 500, 200+Y3+340)
 			dc.DrawStringWrapped(result, 400, 200+Y2+400, 0.5, 0.5, 100, 2, gg.AlignLeft)
-			ff, cl := writer.ToBytes(dc.Image())
+			ff, err := imgfactory.ToBytes(dc.Image()) // 图片放入缓存
+			if err != nil {
+				ctx.SendChain(message.Text("ERROR: ", err))
+				return
+			}
 			ctx.SendChain(message.ImageBytes(ff))
-			cl()
 		})
 }
