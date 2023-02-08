@@ -127,7 +127,7 @@ func init() { // 主函数
 			isDisplay:  kanbanEnable,          // 显示看板娘
 			isCustom:   customKanban,
 			statusText: "○ INFO",            // 启用状态
-			enableText: false,               // 启用状态
+			enableText: true,                // 启用状态
 			isDouble:   double,              // 双列排版
 			pluginName: "ZeroBot-Plugin",    // 插件名
 			font1:      text.BoldFontFile,   // 字体1
