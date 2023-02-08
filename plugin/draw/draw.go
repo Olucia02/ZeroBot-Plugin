@@ -1,4 +1,5 @@
-package draw // 服务详情
+// Package draw 服务详情
+package draw
 
 import (
 	"errors"
@@ -58,7 +59,6 @@ var (
 	customKanban = false // 自定义看板娘
 	kanbanEnable = true  // 开关
 	roleName     = "kanban.png"
-	managers     = ctrl.NewManager[*zero.Ctx]("data/control/plugins.db") // 插件对应管理
 )
 
 func init() {
@@ -77,18 +77,12 @@ func init() { // 主函数
 		Help:             "- 服务详情\n",
 	})
 	en.OnCommandGroup([]string{"服务详情", "service_detail"}, zero.UserOrGrpAdmin).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		lenmap := len(ctx.State["manager"].(*ctrl.Control[*zero.Ctx]).Manager.M)
 		i, j := 0, 0
 		double, fontSize, multiple := true, 40.0, 5.0
 		gid := ctx.Event.GroupID
 		if gid == 0 {
 			gid = -ctx.Event.UserID
-		}
-		managers.RLock()
-		lenmap := len(managers.M)
-		managers.RUnlock()
-		if lenmap == 0 {
-			ctx.SendChain(message.Text("服务数量为: ", lenmap))
-			return
 		}
 		var tmp strings.Builder
 		var tmp2 strings.Builder
@@ -103,7 +97,9 @@ func init() { // 主函数
 		}
 		tab := "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\n"
 		tmp.WriteString("\t\t\t\t  <---------服务详情--------->   \t\t\t\t")
-		managers.ForEach(func(key string, service *ctrl.Control[*zero.Ctx]) bool {
+		// managers.ForEach(func(key string, service *ctrl.Control[*zero.Ctx]) bool {
+		control.ForEachByPrio(func(p int, service *ctrl.Control[*zero.Ctx]) bool {
+			key := service.Service
 			i++
 			if i > end+1 && lenmap > 5 {
 				goto label
