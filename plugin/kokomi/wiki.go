@@ -6,7 +6,6 @@ import (
 	"fmt"
 	www "net/url"
 	"os"
-	"unicode/utf8"
 
 	"github.com/FloatTech/floatbox/web"
 	ctrl "github.com/FloatTech/zbpctrl"
@@ -42,17 +41,10 @@ func init() { // 主函数
 			"- #武器xxx[武器图鉴查询]\n" +
 			"- #xxx[角色图鉴查询]",
 	})
-	en.OnPrefix("#").SetBlock(true).Handle(func(ctx *zero.Ctx) {
-		str := ctx.State["args"].(string) // 获取key
-		str = StringStrip(str)            //删除可能存在的空格
-		var keys, word string
-		if utf8.RuneCountInString(str) > 1 {
-			keys = str[0:6] //匹配种类
-			word = str[6:]  //关键字
-		} else {
-			keys = str //单字角色
-		}
-
+	en.OnRegex(`(#|＃)\s?(查卡|七圣|培养|材料|特产|位置|武器|图鉴|收益|参考|攻略|原魔)?\s?(\D*)(\d)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		keys := ctx.State["regex_matched"].([]string)[2] //匹配种类
+		word := ctx.State["regex_matched"].([]string)[3] //关键字
+		//num := ctx.State["regex_matched"].([]string)[4]  //可能存在的选择数
 		var url, k string //匹配链接
 		var paths Wikimap
 		t, err := os.ReadFile("plugin/kokomi/data/json/path.json") //获取文件
@@ -61,7 +53,6 @@ func init() { // 主函数
 			return
 		}
 		_ = json.Unmarshal(t, &paths)
-
 		switch keys {
 		case "查卡", "七圣": //七圣召唤
 			url = url3
@@ -137,7 +128,7 @@ func init() { // 主函数
 		default: //角色图鉴
 			url = url1
 			wife := GetWifeOrWq("wife")
-			swifeid := wife.Findnames(str)
+			swifeid := wife.Findnames(word)
 			if swifeid == "" {
 				return
 			}
