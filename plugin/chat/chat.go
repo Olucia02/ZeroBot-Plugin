@@ -1,4 +1,4 @@
-// Package chat 对话插件
+// Package chat 回馈
 package chat
 
 import (
@@ -66,8 +66,8 @@ func init() { // 插件主体
 					}[rand.Intn(2)]))
 				ctx.SetGroupBan(
 					ctx.Event.GroupID,
-					ctx.Event.UserID, // 要禁言的人的qq
-					60,               // 要禁言的时间（1分钟）
+					ctx.Event.UserID,       // 要禁言的人的qq
+					(60 * rand.Int63n(15)), // 要禁言的时间
 				)
 			}
 		})
