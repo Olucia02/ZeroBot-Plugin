@@ -73,7 +73,8 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cangtoushi"    // 藏头诗
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/che"           // 撤回
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chehui"        // 防撤回
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/choose"        // 选择困难症帮手
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/choose"        // 选择困难症帮手 
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/re0"       
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chouxianghua"  // 说抽象话
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chrev"         // 英文字符翻转
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/coser"         // 三次元小姐姐
