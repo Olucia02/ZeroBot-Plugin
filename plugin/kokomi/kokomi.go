@@ -71,7 +71,7 @@ func init() { // 主函数
 		uid := Getuid(qquid)
 		suid := strconv.Itoa(uid)
 		if uid == 0 {
-			ctx.SendChain(message.Text("-未绑定uid" + Config.Postfix))
+			ctx.SendChain(message.Text("-未绑定uid\n-第一次使用请发送\"绑定xxx\"" + Config.Postfix))
 			return
 		}
 		//############################################################判断数据更新,逻辑原因不能合并进switch
