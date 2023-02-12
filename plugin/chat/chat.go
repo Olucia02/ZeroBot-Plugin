@@ -57,13 +57,21 @@ func init() { // 插件主体
 					[]string{
 						"连" + nickname + "都要戳的人，最讨厌了！",
 						"再戳" + nickname + "......，" + nickname + "...就生气了!",
-					}[rand.Intn(2)]))
+						"再戳" + nickname + "就不理你了！",
+					}[rand.Intn(3)]))
 			default:
 				ctx.SendChain(message.Text(
 					[]string{
 						"大变态，吃" + nickname + "一拳！",
 						nickname + "生气了！ヾ(≧へ≦)〃",
-					}[rand.Intn(2)]))
+						"来自" + nickname + "对hentai的反击！",
+						"你们都戳了" + nickname + "多少下了！哼＞︿＜",
+						nickname + "的脸要被戳出坑了(生气)...",
+						nickname + "每天都要被好多hentai戳，呜呜呜~",
+						"可怜的" + nickname + "每天都会被hentai群友戳傻...",
+						"不要戳" + nickname + "了！要坏掉了!",
+						"不可以，不可以戳" + nickname + "那里!",
+					}[rand.Intn(9)]))
 				ctx.SetGroupBan(
 					ctx.Event.GroupID,
 					ctx.Event.UserID,       // 要禁言的人的qq
