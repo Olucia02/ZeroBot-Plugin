@@ -73,8 +73,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/cangtoushi"    // 藏头诗
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/che"           // 撤回
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chehui"        // 防撤回
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/choose"        // 选择困难症帮手 
-	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/re0"       
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/choose"        // 选择困难症帮手
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chouxianghua"  // 说抽象话
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/chrev"         // 英文字符翻转
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/coser"         // 三次元小姐姐
@@ -119,9 +118,11 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/novel"         // 铅笔小说网搜索
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/nsfw"          // nsfw图片识别
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/omikuji"       // 浅草寺求签
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ping"          // ping
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/qqwife"        // 一群一天一夫一妻制群老婆
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/quan"          // QQ权重查询
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/qzone"         // qq空间表白墙
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/re0"
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/realcugan"     // realcugan清晰术
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/reborn"        // 投胎
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/roulette"      // 轮盘赌
