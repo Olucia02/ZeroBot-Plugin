@@ -76,7 +76,7 @@ func init() { // 主函数
 
 			conn.SetDeadline(time.Now().Add(time.Duration(timeout) * time.Millisecond))
 			t1 := time.Now()
-			_, err := conn.Write(data)
+			n, err := conn.Write(data)
 			if err != nil {
 				failCount++
 				msg.WriteString("write timeout\n")
@@ -86,7 +86,7 @@ func init() { // 主函数
 				continue
 			}
 			buf := make([]byte, 65535)
-			_, err = conn.Read(buf)
+			n, err = conn.Read(buf)
 			if err != nil {
 				failCount++
 				msg.WriteString("read timeout\n")
@@ -104,7 +104,7 @@ func init() { // 主函数
 				maxTs = ts
 			}
 			totalTs += ts
-			msg.WriteString(fmt.Sprintf("字节=%d 时间=%dms TTL=%d\n", buf[12], buf[13], buf[14]))
+			msg.WriteString(fmt.Sprintf("字节=%d 时间=%dms TTL=%d\n", n-28, ts, buf[8]))
 			time.Sleep(time.Second)
 		}
 		msg.WriteString("统计信息:\n")
