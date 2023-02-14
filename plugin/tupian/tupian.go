@@ -21,23 +21,27 @@ const (
 	xing     = "https://iw233.cn/api.php?sort=xing"
 	sese     = "http://aikohfiosehgairl.fgimax2.fgnwctvip.com/uyfvnuvhgbuiesbrghiuudvbfkllsgdhngvbhsdfklbghdfsjksdhnvfgkhdfkslgvhhrjkdshgnverhbgkrthbklg.php?sort=qwuydcuqwgbvwgqefvbwgueahvbfkbegh"
 	biaoqing = "https://iw233.cn/api.php?sort=img"
+	cos      = "http://aikohfiosehgairl.fgimax2.fgnwctvip.com/uyfvnuvhgbuiesbrghiuudvbfkllsgdhngvbhsdfklbghdfsjksdhnvfgkhdfkslgvhhrjkdshgnverhbgkrthbklg.php/?sort=cos"
+	manghe   = "https://iw233.cn/api.php?sort=random"
 )
 
 func init() {
 	engine := control.Register("tupian", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Help: "全部图片指令\n" +
+			"- cos\n" +
 			"- 兽耳\n" +
 			"- 白毛\n" +
 			"- 黑丝\n" +
 			"- 白丝\n" +
 			"- 丝袜\n" +
-			"- 随机壁纸\n" +
 			"- 星空\n" +
+			"- 开盲盒\n" +
+			"- 随机壁纸\n" +
 			"- 随机表情包\n" +
-			"- 涩涩哒咩/我要涩涩\n",
+			"- 涩涩达咩/我要涩涩\n",
 	})
-	engine.OnFullMatchGroup([]string{"兽耳", "随机壁纸", "星空", "白毛", "我要涩涩", "涩涩达咩", "白丝", "黑丝", "丝袜", "随机表情包"}).SetBlock(true).
+	engine.OnFullMatchGroup([]string{"随机壁纸", "兽耳", "星空", "白毛", "我要涩涩", "涩涩达咩", "白丝", "黑丝", "丝袜", "随机表情包", "cos", "盲盒", "开盲盒"}).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			var url string
 			switch ctx.State["matched"].(string) {
@@ -59,6 +63,10 @@ func init() {
 				url = siwa
 			case "随机表情包":
 				url = biaoqing
+			case "cos":
+				url = cos
+			case "盲盒", "开盲盒":
+				url = manghe
 			}
 			url2, err := bilibili.GetRealURL(url)
 			if err != nil {
