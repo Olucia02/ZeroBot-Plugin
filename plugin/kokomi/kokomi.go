@@ -142,7 +142,7 @@ func init() { // 主函数
 		// 获取本地缓存数据
 		txt, err := os.ReadFile("plugin/kokomi/data/js/" + suid + ".kokomi")
 		if err != nil {
-			ctx.SendChain(message.Text("-本地未找到账号信息, 请更新面板" + Config.Postfix))
+			ctx.SendChain(message.Text("-本地未找到账号信息, 请\"更新面板\"" + Config.Postfix))
 			return
 		}
 
@@ -154,7 +154,7 @@ func init() { // 主函数
 			return
 		}
 		if len(alldata.Chars) == 0 {
-			ctx.SendChain(message.Text("-请在游戏中打开角色展柜,并将想查询的角色进行展示" + "\n-完成上述操作并等待5分钟后,请使用 更新面板 获取账号信息" + Config.Postfix))
+			ctx.SendChain(message.Text("-请在游戏中打开角色展柜,并将想查询的角色进行展示" + "\n-完成上述操作并等待5分钟后,请使用\"更新面板\"获取账号信息" + Config.Postfix))
 			return
 		}
 
