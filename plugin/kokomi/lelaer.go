@@ -16,6 +16,7 @@ func (ndata Thisdata) GetSumComment(uid string, wife FindMap) (data []byte, err 
 	var teyvat *Teyvat
 	if teyvat, err = ndata.transToTeyvat(uid, wife); err == nil {
 		data, _ = json.Marshal(teyvat)
+		fmt.Println(string(data))
 		data, err = web.RequestDataWith(web.NewTLS12Client(),
 			"https://api.lelaer.com/ys/getSumComment.php",
 			"POST",
@@ -101,10 +102,10 @@ func (ndata Thisdata) transToTeyvat(uid string, wife FindMap) (*Teyvat, error) {
 		return nil, lelaerErrorSYS
 	}
 
-	s := getServer(uid)
 	res := &Teyvat{Time: time.Now().Unix()}
 
 	for l := 0; l < len(ndata.Chars); l++ {
+		s := getServer(uid)
 		v := ndata.Chars[l]
 		name := v.Name
 		role := GetRole(name) // 获取角色
