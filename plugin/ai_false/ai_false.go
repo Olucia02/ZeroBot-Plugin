@@ -66,6 +66,7 @@ func init() { // 插件主体
 	}
 	engine.OnFullMatchGroup([]string{"检查身体", "自检", "启动自检", "系统状态"}, zero.AdminPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
+			now := time.Now()
 			img, err := drawstatus(ctx.State["manager"].(*ctrl.Control[*zero.Ctx]), ctx.Event.SelfID, zero.BotConfig.NickName[0])
 			if err != nil {
 				ctx.SendChain(message.Text("ERROR: ", err))
@@ -81,7 +82,8 @@ func init() { // 插件主体
 			if id := ctx.SendChain(message.ImageBytes(sendimg)); id.ID() == 0 {
 				ctx.SendChain(message.Text("ERROR: 可能被风控了"))
 			}
-			time.Sleep(3 * time.Second) //3s
+			ctx.SendChain(message.Text("耗时", time.Since(now)))
+			time.Sleep(1 * time.Second) //1s
 			dowPicture()
 		})
 	engine.OnRegex(`^设置默认限速为每\s*(\d+)\s*(分钟|秒)\s*(\d+)\s*次触发$`, zero.SuperUserPermission).SetBlock(true).
