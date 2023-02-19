@@ -26,7 +26,7 @@ func init() {
 		}
 		if userInfo != (catInfo{}) && userInfo.Name != "" {
 			id = ctx.SendChain(message.Reply(id), message.Text("你居然背着你家喵喵出来找小三!"))
-			if rand.Intn(100) == 50 {
+			if rand.Intn(100) < 20 {
 				process.SleepAbout1sTo2s()
 				if rand.Intn(50) == 30 {
 					if catdata.del(gidStr, uidStr) == nil {
@@ -41,15 +41,22 @@ func init() {
 			}
 			return
 		}
-		userInfo.User = ctx.Event.UserID
-		if userInfo.LastTime != 0 {
-			lastTime := time.Unix(userInfo.LastTime/10, 0).Day()
-			if lastTime == time.Now().Day() && (userInfo.LastTime%10) > 2 {
-				ctx.SendChain(message.Reply(id), message.Text("一天只能逛三次猫店哦"))
-				return
-			}
+		lastTime := time.Unix(userInfo.LastTime, 0).Day()
+		if lastTime != time.Now().Day() {
+			userInfo.Weight = 0
+			userInfo.LastTime = 0
 		}
-		userInfo.LastTime = time.Now().Unix()*10 + (userInfo.LastTime%10 + 1)
+		userInfo.User = ctx.Event.UserID
+		typeOfcat := ctx.State["regex_matched"].([]string)[1]
+		if userInfo.LastTime != 0 && typeOfcat == "猫" {
+			ctx.SendChain(message.Reply(id), message.Text("抱歉,一天只能去猫店一次"))
+			return
+		} else if userInfo.Work > 1 {
+			ctx.SendChain(message.Reply(id), message.Text("抱歉,一天只能选购两次"))
+			return
+		}
+		userInfo.Work++
+		userInfo.LastTime = time.Now().Unix()
 		if catdata.insert(gidStr, userInfo) != nil {
 			ctx.SendChain(message.Text("[ERROR]:", err))
 			return
@@ -57,54 +64,83 @@ func init() {
 		money := wallet.GetWalletOf(ctx.Event.UserID)
 		if money < 100 {
 			ctx.SendChain(message.Reply(id), message.Text("一只喵喵官方售价100哦;\n你身上没有足够的钱,快去赚钱吧~"))
-			// return
-			ctx.SendChain(message.Reply(id), message.Text("当前为测试阶段,赠送你200"))
-			if wallet.InsertWalletOf(ctx.Event.UserID, 200) != nil {
-				ctx.SendChain(message.Text("[ERROR]:", err))
-				return
-			}
+			return
 		}
-		ctx.SendChain(message.Reply(id), message.Text("你前往了猫猫店"))
+		/*******************************************************/
+		messageText := make(message.Message, 0, 3)
+		messageText = append(messageText, message.Reply(id))
 		money = 100
-		messageText := ""
 		if rand.Intn(10) == 5 {
 			money = rand.Intn(50) + 50
-			messageText = "你前往的喵喵店时发现正好有活动,\n一只喵喵现在只需要" + strconv.Itoa(money) + ";\n"
+			messageText = append(messageText, message.Text("你前往的喵喵店时发现正好有活动,\n一只喵喵现在只需要", money, "\n------------------------\n"))
 		}
-		// 随机属性生成
-		typeOfcat := ctx.State["regex_matched"].([]string)[1] // 品种
+		/*******************************************************/
 		if typeOfcat == "猫" {
-			if rand.Intn(100) != 50 {
-				nameMap := make([]string, 0, len(catBreeds))
-				for zhName := range catBreeds {
-					nameMap = append(nameMap, zhName)
+			nameMap := make([]string, 0, len(catBreeds))
+			for zhName := range catBreeds {
+				nameMap = append(nameMap, zhName)
+			}
+			if rand.Intn(100) >= 90 {
+				nameMap = append(nameMap, "猫娘")
+			}
+			nameList := make([]int, 0, 5)
+			for i := 0; i < 5; i++ {
+				nameList = append(nameList, rand.Intn(len(nameMap)))
+			}
+			messageText = append(messageText, message.Text("当前猫店售卖以下几只猫:",
+				"\n1.", nameMap[nameList[0]],
+				"\n2.", nameMap[nameList[1]],
+				"\n3.", nameMap[nameList[2]],
+				"\n4.", nameMap[nameList[3]],
+				"\n5.", nameMap[nameList[4]],
+				"\n请发送对应序号进行购买或“取消”取消购买"))
+			ctx.Send(messageText)
+			typeRecv, typeCancel := zero.NewFutureEvent("message", 999, false, zero.OnlyGroup, zero.RegexRule("^([1-5]|取消)$"), zero.CheckGroup(ctx.Event.GroupID), zero.CheckUser(userInfo.User)).Repeat()
+			defer typeCancel()
+			approve := false
+			over := time.NewTimer(60 * time.Second)
+			for {
+				select {
+				case <-over.C:
+					ctx.SendChain(message.Reply(id), message.Text("你考虑的时间太长了,喵喵店都关门了!下次再来买哦~"))
+					return
+				case c := <-typeRecv:
+					over.Stop()
+					switch c.Event.Message.String() {
+					case "取消":
+						ctx.SendChain(message.Reply(c.Event.MessageID), message.Text("欢迎你的下次光临"))
+						return
+					default:
+						index, _ := strconv.Atoi(c.Event.Message.String())
+						typeOfcat = nameMap[nameList[index-1]]
+						approve = true
+					}
 				}
-				typeOfcat = nameMap[rand.Intn(len(nameMap))]
-			} else {
-				typeOfcat = "猫娘"
+				if approve {
+					break
+				}
 			}
 		}
 		picurl, _ := getPicByBreed(catBreeds[typeOfcat])
 		satiety := 90 * rand.Float64() // 饱食度
 		mood := rand.Intn(100)         // 心情
-		weight := 10 * rand.Float64()  // 体重
+		weight := 2 + 8*rand.Float64() // 体重
 
-		id = ctx.SendChain(message.Reply(id), message.Text(messageText, "你在喵喵店看到了一只喵喵,经过询问后得知他当前的信息为:\n"),
+		id = ctx.SendChain(message.Reply(id), message.Text("经过询问后得知它当前的信息为:\n"),
 			message.Image(picurl),
 			message.Text("品种: ", typeOfcat,
 				"\n当前饱食度: ", strconv.FormatFloat(satiety, 'f', 0, 64),
 				"\n当前心情: ", mood,
 				"\n当前体重: ", strconv.FormatFloat(weight, 'f', 2, 64),
-				"\n你是否想要买这只喵喵呢?(回答“是/否”)"))
-		recv, cancel := zero.NewFutureEvent("message", 999, false, zero.OnlyGroup, zero.RegexRule("^(是|否)$"), zero.CheckGroup(ctx.Event.GroupID), zero.CheckUser(userInfo.User)).Repeat()
+				"\n\n你想要买这只喵喵,\n请发送“叫xxx”为它取个名字吧~\n(发送“否”取消购买)"))
+		recv, cancel := zero.NewFutureEvent("message", 999, false, zero.OnlyGroup, zero.RegexRule("^(叫.*|否)$"), zero.CheckGroup(ctx.Event.GroupID), zero.CheckUser(userInfo.User)).Repeat()
 		defer cancel()
 		approve := false
-		over := time.NewTimer(60 * time.Second)
+		over := time.NewTimer(90 * time.Second)
 		for {
 			select {
 			case <-over.C:
 				ctx.SendChain(message.Reply(id), message.Text("你考虑的时间太长了,喵喵店都关门了!下次再来买哦~"))
-				// cancel()
 				return
 			case c := <-recv:
 				over.Stop()
@@ -113,45 +149,29 @@ func init() {
 					ctx.SendChain(message.Reply(c.Event.MessageID), message.Text("欢迎你的下次光临"))
 					return
 				default:
+					id = c.Event.MessageID
+					userInfo.Name = strings.ReplaceAll(c.Event.Message.String(), "叫", "")
+					if userInfo.Name == "" || len(userInfo.Name) > 15 {
+						over.Reset(90 * time.Second)
+						ctx.SendChain(message.Reply(id), message.Text("请输入正确的猫名"))
+						continue
+					}
 					approve = true
 				}
 			}
 			if approve {
-				// cancel()
 				break
 			}
 		}
-		ctx.SendChain(message.Reply(id), message.Text("喵喵对你喵喵了两句,貌似是想让你给它取名呢!\n请发送“叫xxx”给它取名吧~"))
-		nameRecv, nameCancel := zero.NewFutureEvent("message", 999, false, zero.OnlyGroup, zero.RegexRule("^叫.*"), zero.CheckGroup(ctx.Event.GroupID), zero.CheckUser(userInfo.User)).Repeat()
-		defer nameCancel()
-		approve = false
-		over = time.NewTimer(30 * time.Second)
-		for {
-			select {
-			case <-over.C:
-				ctx.SendChain(message.Reply(id), message.Text("你考虑的时间太长了!可以发送“喵喵改名叫xxx”进行再次改名喔"))
-				userInfo.Name = typeOfcat
-				approve = true
-			case c := <-nameRecv:
-				id = c.Event.MessageID
-				userInfo.Name = strings.ReplaceAll(c.Event.Message.String(), "叫", "")
-				if userInfo.Name == "" || len(userInfo.Name) > 30 {
-					ctx.SendChain(message.Reply(id), message.Text("请输入正确的猫名"))
-					continue
-				}
-				if rand.Intn(5) == 1 {
-					mood += rand.Intn(30)
-					if mood > 100 {
-						mood = 100
-					}
-					ctx.SendChain(message.Reply(id), message.Text("这只喵喵好像很喜欢这个名字"))
-				}
-				approve = true
+		moodText := ""
+		if rand.Intn(5) == 1 {
+			mood += rand.Intn(30)
+			if mood > 100 {
+				mood = 100
 			}
-			if approve {
-				break
-			}
+			moodText = "这只喵喵好像很喜欢这个名字,\n"
 		}
+		userInfo.Work = 0
 		userInfo.LastTime = 0
 		userInfo.Type = typeOfcat
 		userInfo.Satiety = satiety
@@ -166,7 +186,7 @@ func init() {
 			ctx.SendChain(message.Text("[ERROR]:", err))
 			return
 		}
-		ctx.SendChain(message.Text("恭喜你买了一只喵喵"))
+		ctx.SendChain(message.Reply(id), message.Text(moodText, "恭喜你买了一只喵喵"))
 	})
 	engine.OnRegex(`^买((\d+)袋)?猫粮$`, zero.OnlyGroup, getdb).SetBlock(true).Limit(ctxext.LimitByUser).Handle(func(ctx *zero.Ctx) {
 		id := ctx.Event.MessageID

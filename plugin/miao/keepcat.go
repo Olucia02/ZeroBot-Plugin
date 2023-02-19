@@ -29,22 +29,29 @@ func init() {
 			return
 		}
 		/***************************************************************/
-		subtime := 0.0
-		if userInfo.LastTime != 0 {
-			lastTime := time.Unix(userInfo.LastTime, 0)
-			subtime = time.Since(lastTime).Hours()
-		}
-		if subtime > 1 {
-			userInfo.Satiety -= subtime
-			userInfo = userInfo.settleOfWeight()
-			userInfo = userInfo.settleOfMood()
-		}
-		/***************************************************************/
 		workStauts := "休闲中"
 		money, workEnd := userInfo.settleOfWork(gidStr)
 		if !workEnd {
 			workStauts = "工作中"
-		} else if money > 0 {
+		} else {
+			/***************************************************************/
+			if userInfo.Food > 0 && (rand.Intn(10) == 1 || userInfo.Satiety < 10) {
+				eat := userInfo.Food * rand.Float64()
+				userInfo = userInfo.settleOfSatiety(eat)
+			}
+			/***************************************************************/
+			subtime := 0.0
+			if userInfo.LastTime != 0 {
+				lastTime := time.Unix(userInfo.LastTime, 0)
+				subtime = time.Since(lastTime).Hours()
+			}
+			if subtime > 1 {
+				userInfo.Satiety -= subtime
+				userInfo = userInfo.settleOfWeight()
+				userInfo = userInfo.settleOfMood()
+			}
+		}
+		if money > 0 {
 			workStauts = "从工作回来休息中\n	   为你赚了" + strconv.Itoa(money)
 		}
 		/***************************************************************/
@@ -105,6 +112,10 @@ func init() {
 		food := 1.0
 		if ctx.State["regex_matched"].([]string)[2] != "" {
 			food, _ = strconv.ParseFloat(ctx.State["regex_matched"].([]string)[2], 64)
+		}
+		if (food > 5 || food < 0.5) && rand.Intn(10) < 8 {
+			ctx.SendChain(message.Reply(id), message.Text(userInfo.Name, ": ????"))
+			return
 		}
 		if userInfo.Food == 0 || userInfo.Food < food {
 			ctx.SendChain(message.Reply(id), message.Text("铲屎官你已经没有足够的猫粮了"))
@@ -319,6 +330,7 @@ func (data *catInfo) settleOfWork(gid string) (int, bool) {
 	getFood := 5 * rand.Float64() // 工作餐
 	data.Satiety += getFood * 10
 	data.Work = 0
+	data.LastTime = time.Now().Unix() - workTime*int64(time.Minute)
 	if catdata.insert(gid, *data) != nil {
 		return 0, true
 	}

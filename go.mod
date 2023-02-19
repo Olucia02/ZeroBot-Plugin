@@ -5,14 +5,15 @@ go 1.19
 require (
 	github.com/Baidu-AIP/golang-sdk v1.1.1
 	github.com/FloatTech/AnimeAPI v1.6.1-0.20230207081411-573533b18194
-	github.com/FloatTech/floatbox v0.0.0-20230207075003-0f70b30c320d
-	github.com/FloatTech/gg v1.1.1
-	github.com/FloatTech/imgfactory v0.2.1
-	github.com/FloatTech/rendercard v0.0.9
+	github.com/FloatTech/ZeroBot-Plugin-Playground v0.0.0-20230218164150-663b60838c3b
+	github.com/FloatTech/floatbox v0.0.0-20230207080446-026a2f086c74
+	github.com/FloatTech/gg v1.1.2
+	github.com/FloatTech/imgfactory v0.2.2-0.20230215052637-9f7b05520ca9
+	github.com/FloatTech/rendercard v0.0.10-0.20230215092509-ff0745852f23
 	github.com/FloatTech/sqlite v1.5.7
 	github.com/FloatTech/ttl v0.0.0-20220715042055-15612be72f5b
 	github.com/FloatTech/zbpctrl v1.5.3-0.20230130095145-714ad318cd52
-	github.com/FloatTech/zbputils v1.6.2-0.20230207084008-8c14cb9fcacb
+	github.com/FloatTech/zbputils v1.6.2-0.20230217063720-e64cc4bde7c6
 	github.com/RomiChan/syncx v0.0.0-20221202055724-5f842c53020e
 	github.com/RomiChan/websocket v1.4.3-0.20220227141055-9b2c6168c9c5
 	github.com/antchfx/htmlquery v1.2.5
@@ -63,7 +64,6 @@ require (
 	github.com/jfreymuth/oggvorbis v1.0.1 // indirect
 	github.com/jfreymuth/vorbis v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
