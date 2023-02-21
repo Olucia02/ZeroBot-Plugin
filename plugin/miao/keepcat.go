@@ -210,6 +210,10 @@ func init() {
 			ctx.SendChain(message.Reply(id), message.Text(userInfo.Name, "还在努力打工,没有回来呢"))
 			return
 		}
+		if time.Unix(userInfo.Work, 0).Day() == time.Now().Day() {
+			ctx.SendChain(message.Reply(id), message.Text(userInfo.Name, "已经很累了,你不能这么资本"))
+			return
+		}
 		/***************************************************************/
 		workTime := 1 + rand.Intn(9)
 		if ctx.State["regex_matched"].([]string)[2] != "" {
@@ -327,10 +331,14 @@ func (data *catInfo) settleOfWork(gid string) (int, bool) {
 	if subtime < float64(workTime) {
 		return 0, false
 	}
-	getFood := 5 * rand.Float64() // 工作餐
+	getFood := 5 * rand.Float64()
+	if rand.Intn(5) == 2 { // 20%受饿
+		getFood = -(getFood + float64(workTime)*rand.Float64())
+	}
 	data.Satiety += getFood * 10
 	data.Work = 0
-	data.LastTime = time.Now().Unix() - workTime*int64(time.Minute)
+	subTime, _ := time.ParseDuration("-" + strconv.FormatInt(workTime, 10) + "h")
+	data.LastTime = time.Now().Add(subTime).Unix()
 	if catdata.insert(gid, *data) != nil {
 		return 0, true
 	}
