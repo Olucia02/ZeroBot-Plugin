@@ -151,6 +151,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ymgal"         // 月幕galgame
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaoan"         // 早安图
 
+	//_ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/cybercat"
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/thesaurus"     // 词典匹配回复
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/wtf"           // 鬼东西
 

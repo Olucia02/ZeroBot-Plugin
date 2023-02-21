@@ -12,14 +12,28 @@ import (
 	"github.com/FloatTech/floatbox/web"
 )
 
-func (ndata Thisdata) GetSumComment(uid string, wife FindMap) (data []byte, err error) {
+func (ndata Thisdata) GetSumComment(uid string) (data []byte, err error) {
 	var teyvat *Teyvat
-	if teyvat, err = ndata.transToTeyvat(uid, wife); err == nil {
+	if teyvat, err = ndata.transToTeyvat(uid); err == nil {
 		data, _ = json.Marshal(teyvat)
 		data, err = web.RequestDataWith(web.NewTLS12Client(),
 			"https://api.lelaer.com/ys/getSumComment.php",
 			"POST",
 			"https://servicewechat.com/wx2ac9dce11213c3a8/192/page-frame.html",
+			"Mozilla/5.0 (Linux; Android 12; SM-G977N Build/SP1A.210812.016; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4375 MMWEBSDK/20221011 Mobile Safari/537.36 MMWEBID/4357 MicroMessenger/8.0.30.2244(0x28001E44) WeChat/arm64 Weixin GPVersion/1 NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android",
+			bytes.NewReader(data),
+		)
+	}
+	return
+}
+func (ndata Thisdata) Getgroupdata(uid string, is [4]int) (data []byte, err error) {
+	var teyvat *Teyvat
+	if teyvat, err = ndata.transTogroup(uid, is); err == nil {
+		data, _ = json.Marshal(teyvat)
+		data, err = web.RequestDataWith(web.NewTLS12Client(),
+			"https://api.lelaer.com/ys/getTeamResult.php",
+			"POST",
+			"https://servicewechat.com/wx2ac9dce11213c3a8/211/page-frame.html",
 			"Mozilla/5.0 (Linux; Android 12; SM-G977N Build/SP1A.210812.016; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/86.0.4240.99 XWEB/4375 MMWEBSDK/20221011 Mobile Safari/537.36 MMWEBID/4357 MicroMessenger/8.0.30.2244(0x28001E44) WeChat/arm64 Weixin GPVersion/1 NetType/WIFI Language/zh_CN ABI/arm64 MiniProgramEnv/android",
 			bytes.NewReader(data),
 		)
@@ -79,30 +93,31 @@ type (
 	}
 
 	Teyvat struct {
-		Data []TeyvatData `json:"role_data"`
-		Time int64        `json:"timestamp"`
+		Uid    string       `json:"uid"`
+		Server string       `json:"server"`
+		Data   []TeyvatData `json:"role_data"`
+		Time   int64        `json:"timestamp"`
 	}
 )
 
 var lelaerErrorSYS = errors.New("程序错误")
 
-func (ndata Thisdata) transToTeyvat(uid string, wife FindMap) (*Teyvat, error) {
-	if wife == nil {
-		if wife = GetWifeOrWq("wife"); wife == nil {
-			return nil, lelaerErrorSYS
-		}
-	}
-	reliquary := GetReliquary()
-	if reliquary == nil {
-		return nil, lelaerErrorSYS
-	}
-	syw := GetSywName()
-	if syw == nil {
-		return nil, lelaerErrorSYS
-	}
-
+func (ndata Thisdata) transToTeyvat(uid string) (*Teyvat, error) {
 	res := &Teyvat{Time: time.Now().Unix()}
 	for l := 0; l < len(ndata.Chars); l++ {
+		_, err := res.getroeldata(l, uid, ndata)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ndata Thisdata) transTogroup(uid string, is [4]int) (*Teyvat, error) {
+	res := &Teyvat{Time: time.Now().Unix()}
+	res.Uid = uid
+	res.Server = "cn_gf01"
+	for _, l := range is {
 		_, err := res.getroeldata(l, uid, ndata)
 		if err != nil {
 			return nil, err
