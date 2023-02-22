@@ -1,4 +1,4 @@
-package kokomi // Package kokomi 导入yuan-shen模块
+package kokomi // Package kokomi
 
 import (
 	"bufio"
@@ -68,44 +68,13 @@ type Dam struct {
 	} `json:"result"`
 }
 type Damgroup struct {
-	Code           int    `json:"code"`
-	AdOpen         bool   `json:"ad_open"`
-	IsQuene        bool   `json:"is_quene"`
-	Waiting        bool   `json:"waiting"`
-	Count          int    `json:"count"`
-	EnergyHidden   bool   `json:"energy_hidden"`
-	RechargeHidden bool   `json:"recharge_hidden"`
-	Tomorrow       int    `json:"tomorrow"`
-	ShowRefresh    bool   `json:"show_refresh"`
-	Tips           string `json:"tips"`
-	Result         struct {
-		UID        string `json:"uid"`
-		Gameid     string `json:"gameid"`
-		Avatar     string `json:"avatar"`
-		UserLevel  string `json:"user_level"`
-		ServerName string `json:"server_name"`
-		ZdlResult  int    `json:"zdl_result"`
-		ZdlTips0   string `json:"zdl_tips0"`
-		ZdlTips1   string `json:"zdl_tips1"`
-		ZdlTips2   string `json:"zdl_tips2"`
-		ZdlTips3   string `json:"zdl_tips3"`
-		RoleList   []struct {
-			Role         string `json:"role"`
-			RoleClass    int    `json:"role_class"`
-			RoleLevel    string `json:"role_level"`
-			RoleAvatar   string `json:"role_avatar"`
-			RoleStar     int    `json:"role_star"`
-			Recharge     string `json:"recharge"`
-			KeyValue     int    `json:"key_value"`
-			KeyAbility   string `json:"key_ability"`
-			Artifacts    string `json:"artifacts"`
-			Crit         string `json:"crit"`
-			Weapon       string `json:"weapon"`
-			WeaponClass  string `json:"weapon_class"`
-			WeaponAvatar string `json:"weapon_avatar"`
-			Ability      string `json:"ability"`
-		} `json:"role_list"`
-		ChartData []struct {
+	Result struct {
+		ZdlResult int        `json:"zdl_result"`
+		ZdlTips0  string     `json:"zdl_tips0"`
+		ZdlTips1  string     `json:"zdl_tips1"`
+		ZdlTips2  string     `json:"zdl_tips2"`
+		ZdlTips3  string     `json:"zdl_tips3"`
+		ChartData []struct { //统计图数据
 			Name  string  `json:"name"`
 			Ename string  `json:"ename"`
 			Value float64 `json:"value"`
@@ -113,8 +82,15 @@ type Damgroup struct {
 				Color string `json:"color"`
 			} `json:"label"`
 		} `json:"chart_data"`
-		ChartColor []string `json:"chart_color"`
-		ComboIntro string   `json:"combo_intro"`
+		ComboIntro   string `json:"combo_intro"`
+		RechargeInfo []struct {
+			Ename    string  `json:"ename"`
+			Energy   float64 `json:"energy"`
+			Rate     string  `json:"rate"`
+			Height   int     `json:"height"`
+			Color    string  `json:"color"`
+			Recharge string  `json:"recharge"`
+		} `json:"recharge_info"`
 	} `json:"result"`
 }
 

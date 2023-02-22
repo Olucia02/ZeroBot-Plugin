@@ -1,4 +1,4 @@
-// Package kokomi 原神面板v2.4
+// Package kokomi 原神面板v2.4.1
 package kokomi
 
 import (
@@ -44,12 +44,15 @@ func init() { // 主函数
 	en := control.Register("kokomi", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Brief:            "原神面板查询",
-		Help: "- kokomi菜单\n" +
+		Help: "- kokomi菜单([]里面为可选项)\n" +
 			"- 绑定......(uid)\n" +
-			"- 更新面板\n" +
-			"- 全部面板\n" +
-			"- XX面板\n" +
-			"- 删除账号[@xx]",
+			"- 更新面板[@xx]\n" +
+			"- 全部面板[@xx]\n" +
+			"- XX面板[@xx]\n" +
+			"- 删除账号[@xx]\n" +
+			"- [@xx]队伍伤害[xx xx xx xx]\n" +
+			"- 管理员专属指令:\n" +
+			"- (上传|删除)第(1|2)立绘 XX\n",
 	})
 	en.OnRegex(`(?:#|＃)?(.*)面板\s*(?:\[CQ:at,qq=)?(\d+)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		var allfen = 0.00
@@ -738,8 +741,8 @@ func init() { // 主函数
 	})
 
 	// 绑定uid
-	en.OnRegex(`^(#|＃)?绑定\s*(uid|UID|Uid)?\s*(\d+)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
-		suid := ctx.State["regex_matched"].([]string)[3] // 获取uid
+	en.OnRegex(`^(?:#|＃)?\s*绑定+?\s*(?:uid|UID|Uid)?\s*(\d+)?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		suid := ctx.State["regex_matched"].([]string)[1] // 获取uid
 		int64uid, err := strconv.ParseInt(suid, 10, 64)
 		if suid == "" || int64uid < 100000000 || int64uid > 1000000000 || err != nil {
 			//ctx.SendChain(message.Text("-请输入正确的uid"))
@@ -1005,7 +1008,7 @@ func init() { // 主函数
 	})
 
 	//队伍伤害
-	en.OnRegex(`(?:\[CQ:at,qq=)?(\d+)?\]?(?:#|＃)?队伍伤害\s*((\D+)\s(\D+)\s(\D+)\s(\D+))?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+	en.OnRegex(`(?:\[CQ:at,qq=)?(\d+)?\]?\s*(?:#|＃)?队伍伤害\s*((\D+)\s(\D+)\s(\D+)\s(\D+))?`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		var alldata Thisdata
 		is := [4]int{}
 		sqquid := ctx.State["regex_matched"].([]string)[1] // 获取第三者qquid
@@ -1071,6 +1074,7 @@ func init() { // 主函数
 				}
 			}
 		}
+
 		ctx.SendChain(message.Text("-伤害计算中...\n-队伍配置", fmt.Sprintln(names)))
 		da, err := alldata.Getgroupdata(suid, is)
 		if err != nil {
@@ -1100,10 +1104,29 @@ func init() { // 主函数
 			yingtwo := Yinying(460, 600, 16, black127)
 			yingthree := Yinying(500, 230, 16, black127)
 			yingfour := Yinying(500, 400, 16, black127)
+			yingzero := Yinying(410, 160, 16, black127)
 			one := gg.NewContext(410, 570)
 			two := gg.NewContext(460, 600)
 			three := gg.NewContext(500, 230)
 			four := gg.NewContext(500, 400)
+			zero := gg.NewContext(410, 160)
+			//图层零,用户信息
+			{
+				zero.SetRGB(1, 1, 1) //白色
+				if err := zero.LoadFontFace(NameFont, 80); err != nil {
+					panic(err)
+				}
+				zero.DrawStringAnchored(string([]rune(names[0])[:1])+
+					string([]rune(names[1])[:1])+
+					string([]rune(names[2])[:1])+
+					string([]rune(names[3])[:1]), 390, 130, 1, 0)
+				if err := zero.LoadFontFace(FontFile, 30); err != nil {
+					panic(err)
+				}
+				zero.DrawStringAnchored("昵称:"+alldata.Nickname, 390, 40, 1, 0)
+				dc.DrawImage(yingzero, 630, 20)
+				dc.DrawImage(zero.Image(), 630, 20)
+			}
 			//图层1,角色配置
 			{
 				if err := one.LoadFontFace(FontFile, 40); err != nil {
@@ -1165,7 +1188,7 @@ func init() { // 主函数
 				}
 				for k, v := range gdate.Result.ChartData {
 					two.DrawRectangle(float64(50+k*60), 575, 20, -v.Value/numchart*480)
-					two.DrawRectangle(float64(40+k*60), 20, 20, 20)
+					two.DrawRectangle(float64(50+k*60), 20, 20, 20)
 					two.SetHexColor(v.Label.Color) // 设置画笔颜色为绿色
 					two.Fill()                     // 使用当前颜色（绿）填充满当前路径（矩形）所闭合出的区域
 				}
@@ -1184,8 +1207,8 @@ func init() { // 主函数
 				}
 				three.SetHexColor("#98F5FF")
 				three.DrawStringAnchored(strconv.Itoa(gdate.Result.ZdlResult), 250, 160, 0.5, 0)
-				dc.DrawImage(yingthree, 60, 750)
-				dc.DrawImage(three.Image(), 60, 750)
+				dc.DrawImage(yingthree, 40, 750)
+				dc.DrawImage(three.Image(), 40, 750)
 			}
 			//图层4,手法展示
 			{
@@ -1201,8 +1224,8 @@ func init() { // 主函数
 					}
 				}
 
-				dc.DrawImage(yingfour, 60, 1000)
-				dc.DrawImage(four.Image(), 60, 1000)
+				dc.DrawImage(yingfour, 40, 1000)
+				dc.DrawImage(four.Image(), 40, 1000)
 			}
 			// 版本号
 			if err := dc.LoadFontFace(BaFile, 30); err != nil {
