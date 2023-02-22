@@ -69,7 +69,7 @@ type Dam struct {
 }
 type Damgroup struct {
 	Result struct {
-		ZdlResult string     `json:"zdl_result,string"`
+		ZdlResult any        `json:"zdl_result"`
 		ZdlTips0  string     `json:"zdl_tips0"`
 		ZdlTips1  string     `json:"zdl_tips1"`
 		ZdlTips2  string     `json:"zdl_tips2"`
