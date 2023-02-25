@@ -90,6 +90,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/genshin"       // 原神抽卡
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/gif"           // 制图
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/github"        // 搜索GitHub仓库
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/gpt"           // cahtgpt
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/guessmusic"    // 猜歌
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/heisi"         // 黑丝
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/hs"            // 炉石
@@ -150,6 +151,7 @@ import (
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ygo"           // 游戏王相关插件
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/ymgal"         // 月幕galgame
 	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaoan"         // 早安图
+	_ "github.com/FloatTech/ZeroBot-Plugin/plugin/zaobao"        // 防撤回
 
 	//_ "github.com/FloatTech/ZeroBot-Plugin-Playground/plugin/cybercat"
 	// _ "github.com/FloatTech/ZeroBot-Plugin/plugin/thesaurus"     // 词典匹配回复

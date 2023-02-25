@@ -4,8 +4,6 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/FloatTech/AnimeAPI v1.6.1-0.20230207081411-573533b18194 h1:+p85V0fdZNt3UoKreBeI6S3IOPvNmU5/Fnn39ipSkVk=
 github.com/FloatTech/AnimeAPI v1.6.1-0.20230207081411-573533b18194/go.mod h1:LCiKZivPVazRRCnnADQfIBFZiIPHHCFqaCpwZWsFehI=
-github.com/FloatTech/ZeroBot-Plugin-Playground v0.0.0-20230220121834-e46f4b03869f h1:IZ55G8cCFc4P3rXapRtyzwtCI4dz5N/08ZxZ0aF7apw=
-github.com/FloatTech/ZeroBot-Plugin-Playground v0.0.0-20230220121834-e46f4b03869f/go.mod h1:yKdK4yTNMKYHkebNtE+jUZkPwBzRqVvcBF1Mi7/FqwQ=
 github.com/FloatTech/floatbox v0.0.0-20230207080446-026a2f086c74 h1:H6TvOGSq0IydBQDuGqFsRZgMg28XWgI26W+lmBu9jpk=
 github.com/FloatTech/floatbox v0.0.0-20230207080446-026a2f086c74/go.mod h1:88i7PKBQuMbMvrQFsfOYC3NprLytdVKnTkHxBLeZk78=
 github.com/FloatTech/gg v1.1.2 h1:YolgOYg3uDHc1+g0bLtt6QuRA/pvLn+b9IBCIhOOX88=
@@ -128,6 +126,7 @@ github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.0.1/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
 github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
+github.com/jinzhu/now v1.1.5/go.mod h1:d3SSVoowX0Lcu0IBviAWJpolVfI5UJVZZ7cO71lE/z8=
 github.com/jozsefsallai/gophersauce v1.0.1 h1:BA3ovtQRrAb1qYU9JoRLbDHpxnDunlNcEkEfhCvDDCM=
 github.com/jozsefsallai/gophersauce v1.0.1/go.mod h1:YVEI7djliMTmZ1Vh01YPF8bUHi+oKhe3yXgKf1T49vg=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
