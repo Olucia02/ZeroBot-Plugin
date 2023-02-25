@@ -1,5 +1,5 @@
-// Package wenben 文本链接
-package wenben
+// Package zaobao 早报
+package zaobao
 
 import (
 	"fmt"
@@ -14,6 +14,8 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/utils/helper"
 )
 
+const new60s = "https://api.emoao.com/api/60s"
+
 var (
 	yan       = "https://v1.hitokoto.cn/?c=k&encode=text"
 	winter    = []string{"20230109", "20230220"}
@@ -25,8 +27,9 @@ func init() { // 主函数
 	en := control.Register("zaobao", &ctrl.Options[*zero.Ctx]{
 		DisableOnDefault: false,
 		Brief:            "早报",
-		Help: "文本命令大全\n" +
-			"- 西邮早安！",
+		Help: "- 指令列表\n" +
+			"- 西邮早安！" +
+			"- 早报",
 	})
 	en.OnFullMatch("西邮早安！").SetBlock(true).Handle(func(ctx *zero.Ctx) {
 		var (
@@ -115,6 +118,14 @@ func init() { // 主函数
 			msg.WriteString(helper.BytesToString(yi))
 		}
 		ctx.SendChain(message.Text(msg.String()))
+	})
+	en.OnFullMatch("早报").SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		data, err := web.GetData(new60s)
+		if err != nil {
+			ctx.SendChain(message.Text("获取图片失败惹"))
+			return
+		}
+		ctx.SendChain(message.ImageBytes(data))
 	})
 }
 
