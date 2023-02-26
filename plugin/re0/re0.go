@@ -7,6 +7,7 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"os"
+	"os/exec"
 )
 
 func init() { // 主函数
@@ -21,7 +22,13 @@ func init() { // 主函数
 	})
 	en.OnFullMatchGroup([]string{"重启", "洗脸脸", "洗澡澡", "洗白白"}, zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			ctx.SendChain(message.Text("雪儿去", ctx.State["matched"].(string), "啦~"))
+			cmd := exec.Command("powershell.exe", "/c", "start", "run.bat")
+			output, err := cmd.CombinedOutput()
+			if err != nil {
+				ctx.SendChain(message.Text(zero.BotConfig.NickName[0], "重启失败惹", output, err))
+				return
+			}
+			ctx.SendChain(message.Text(zero.BotConfig.NickName[0], "去", ctx.State["matched"].(string), "啦~"))
 			os.Exit(0)
 		})
 }

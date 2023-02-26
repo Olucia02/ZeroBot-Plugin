@@ -19,6 +19,7 @@ import (
 	"github.com/FloatTech/imgfactory"
 	ctrl "github.com/FloatTech/zbpctrl"
 	"github.com/FloatTech/zbputils/control"
+	"github.com/duke-git/lancet/v2/fileutil"
 	//"github.com/fogleman/gg"//原版gg
 	"github.com/FloatTech/gg"
 	//"github.com/golang/freetype"
@@ -1249,6 +1250,24 @@ func init() { // 主函数
 			}
 			ctx.SendChain(message.ImageBytes(ff)) // 输出
 		}
+	})
+	en.OnRegex(`^更新(kokomi|wiki)$`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		var path string
+		switch ctx.State["regex_matched"].([]string)[1] {
+		case "kokomi":
+			path = "plugin/kokomi"
+		case "wiki":
+			path = "plugin/kokomi/data/wiki/genshin-atlas"
+		}
+		if !fileutil.IsExist(path) {
+			return
+		}
+		output, err := RunCmd(path, "git pull")
+		if err != nil {
+			ctx.SendChain(message.Text("更新失败", Config.Postfix, "\n", string(output)))
+			return
+		}
+		ctx.SendChain(message.Text("更新成功", Config.Postfix, "\n", string(output)))
 	})
 }
 
