@@ -25,7 +25,7 @@ func init() { // 主函数
 			cmd := exec.Command("powershell.exe", "/c", "start", "run.bat")
 			output, err := cmd.CombinedOutput()
 			if err != nil {
-				ctx.SendChain(message.Text(zero.BotConfig.NickName[0], "重启失败惹", output, err))
+				ctx.SendChain(message.Text(zero.BotConfig.NickName[0], "重启失败惹", string(output), err))
 				return
 			}
 			ctx.SendChain(message.Text(zero.BotConfig.NickName[0], "去", ctx.State["matched"].(string), "啦~"))
