@@ -21,7 +21,7 @@ func init() { // 主函数
 	})
 	en.OnFullMatchGroup([]string{"重启", "洗脸脸", "洗澡澡", "洗白白"}, zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
-			ctx.SendChain(message.Text("雪儿去", ctx.State["matched"].(string), "啦~"))
+			ctx.SendChain(message.Text(zero.BotConfig.NickName, "去", ctx.State["matched"].(string), "啦~"))
 			os.Exit(0)
 		})
 }
