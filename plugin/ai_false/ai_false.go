@@ -10,7 +10,9 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
+	"unsafe"
 
 	"github.com/FloatTech/AnimeAPI/bilibili"
 	"github.com/FloatTech/floatbox/file"
@@ -31,7 +33,7 @@ import (
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 
-	"github.com/FloatTech/ZeroBot-Plugin/kanban"
+	"github.com/FloatTech/ZeroBot-Plugin/kanban/banner"
 
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
@@ -43,7 +45,11 @@ const (
 	picPath       = "data/aifalse/pic.png"
 )
 
-var boottime = time.Now()
+var (
+	boottime = time.Now()
+	bgdata   *[]byte
+	bgcount  uintptr
+)
 
 func init() { // 插件主体
 	engine := control.Register("aifalse", &ctrl.Options[*zero.Ctx]{
@@ -141,18 +147,29 @@ func drawstatus(m *ctrl.Control[*zero.Ctx], uid int64, botname string) (sendimg 
 	if err != nil {
 		return
 	}
-	back, err := gg.LoadPNG(picPath)
-	if err != nil {
-		err = dowPicture()
-		if err != nil {
-			return
+
+	dldata := (*[]byte)(atomic.LoadPointer((*unsafe.Pointer)(unsafe.Pointer(&bgdata))))
+	if dldata == (*[]byte)(nil) || uintptr(time.Since(boottime).Hours()/24) >= atomic.LoadUintptr(&bgcount) {
+		url, err1 := bilibili.GetRealURL(backgroundURL)
+		if err1 != nil {
+			return nil, err1
 		}
-		back, err = gg.LoadPNG(picPath)
-		if err != nil {
-			return
+		data, err1 := web.RequestDataWith(web.NewDefaultClient(), url, "", referer, "", nil)
+		if err1 != nil {
+			return nil, err1
 		}
+		atomic.AddUintptr(&bgcount, 1)
+		atomic.StorePointer((*unsafe.Pointer)(unsafe.Pointer(&bgdata)), unsafe.Pointer(&data))
+		dldata = &data
 	}
-	data, err := web.GetData("http://q4.qlogo.cn/g?b=qq&nk=" + strconv.FormatInt(uid, 10) + "&s=640")
+	data := *dldata
+
+	back, _, err := image.Decode(bytes.NewReader(data))
+	if err != nil {
+		return
+	}
+
+	data, err = web.GetData("http://q4.qlogo.cn/g?b=qq&nk=" + strconv.FormatInt(uid, 10) + "&s=640")
 	if err != nil {
 		return
 	}
@@ -453,9 +470,9 @@ func drawstatus(m *ctrl.Control[*zero.Ctx], uid int64, botname string) (sendimg 
 		return
 	}
 	canvas.SetRGBA255(0, 0, 0, 255)
-	canvas.DrawStringAnchored("Created By ZeroBot-Plugin "+kanban.Version, float64(canvas.W())/2+3, float64(canvas.H())-70/2+3, 0.5, 0.5)
+	canvas.DrawStringAnchored("Created By ZeroBot-Plugin "+banner.Version, float64(canvas.W())/2+3, float64(canvas.H())-70/2+3, 0.5, 0.5)
 	canvas.SetRGBA255(255, 255, 255, 255)
-	canvas.DrawStringAnchored("Created By ZeroBot-Plugin "+kanban.Version, float64(canvas.W())/2, float64(canvas.H())-70/2, 0.5, 0.5)
+	canvas.DrawStringAnchored("Created By ZeroBot-Plugin "+banner.Version, float64(canvas.W())/2, float64(canvas.H())-70/2, 0.5, 0.5)
 
 	sendimg = canvas.Image()
 	return
