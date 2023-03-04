@@ -1037,6 +1037,9 @@ func init() { // 主函数
 			if len(alldata.Chars) == 0 {
 				ctx.SendChain(message.Text("-请在游戏中打开角色展柜,并将想查询的角色进行展示" + "\n-完成上述操作并等待5分钟后,请使用\"更新面板\"获取账号信息" + Config.Postfix))
 				return
+			} else if len(alldata.Chars) < 4 {
+				ctx.SendChain(message.Text("-展示的角色数量不足4" + Config.Postfix))
+				return
 			}
 		}
 
@@ -1058,6 +1061,9 @@ func init() { // 主函数
 				if names[i] == "" {
 					ctx.SendChain(message.Text("Idmap数据缺失"))
 					return
+				} else if names[i] == "空" || names[i] == "荧" || names[i] == "旅行者" {
+					ctx.SendChain(message.Text("-暂不支持空/荧伤害数据" + Config.Postfix))
+					return
 				}
 				var t = -1
 				// 匹配角色
@@ -1075,7 +1081,7 @@ func init() { // 主函数
 			}
 		}
 
-		ctx.SendChain(message.Text("-伤害计算中...\n-队伍配置", fmt.Sprintln(names)))
+		ctx.SendChain(message.Text("-伤害计算中...\n-队伍配置", fmt.Sprint(names)))
 		da, err := alldata.Getgroupdata("123456789", is)
 		if err != nil {
 			ctx.SendChain(message.Text("Error:", err))
