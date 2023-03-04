@@ -30,7 +30,6 @@ func (ndata Thisdata) Getgroupdata(uid string, is [4]int) (data []byte, err erro
 	var teyvat *Teyvat
 	if teyvat, err = ndata.transTogroup(uid, is); err == nil {
 		data, _ = json.Marshal(teyvat)
-		fmt.Println(string(data))
 		data, err = web.RequestDataWith(web.NewTLS12Client(),
 			"https://api.lelaer.com/ys/getTeamResult.php",
 			"POST",
