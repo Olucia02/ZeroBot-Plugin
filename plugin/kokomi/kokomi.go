@@ -1,4 +1,4 @@
-// Package kokomi 原神面板v2.4.1
+// Package kokomi 原神面板v2.4.2
 package kokomi
 
 import (
@@ -14,7 +14,7 @@ import (
 	"time"
 
 	//"unicode/utf8"
-	"github.com/FloatTech/ZeroBot-Plugin/kanban"
+	kanban "github.com/FloatTech/ZeroBot-Plugin/kanban/banner"
 	"github.com/FloatTech/floatbox/web"
 	"github.com/FloatTech/imgfactory"
 	ctrl "github.com/FloatTech/zbpctrl"
@@ -1076,11 +1076,12 @@ func init() { // 主函数
 		}
 
 		ctx.SendChain(message.Text("-伤害计算中...\n-队伍配置", fmt.Sprintln(names)))
-		da, err := alldata.Getgroupdata(suid, is)
+		da, err := alldata.Getgroupdata("123456789", is)
 		if err != nil {
 			ctx.SendChain(message.Text("Error:", err))
 			return
 		}
+		ctx.SendChain(message.Text(string(da)))
 		//解析
 		var gdate Damgroup
 		err = json.Unmarshal(da, &gdate)
