@@ -1225,14 +1225,31 @@ func init() { // 主函数
 					panic(err)
 				}
 				four.SetRGB(1, 1, 1) //白色
-				four.DrawString("操作手法", 30, 50)
-				buff := truncation(four, gdate.Result.ComboIntro, 440) //宽减20
-				for i, v := range buff {
-					if v != "" {
-						four.DrawString(v, 30, float64(100+i*35))
-					}
+				four.DrawString("操作手法", 30, 40)
+				/*	buff := truncation(four, gdate.Result.ComboIntro, 440) //宽减20
+					for i, v := range buff {
+						if v != "" {
+							four.DrawString(v, 30, float64(100+i*35))
+						}
+					}*/
+				strArr := strings.Split(gdate.Result.ComboIntro, ",")
+				if err := four.LoadFontFace(FontFile, 30); err != nil {
+					panic(err)
 				}
-
+				var ws, hs float64
+				var c [3]int
+				var a = regexp.MustCompile("^[\u4e00-\u9fa5]$")
+				for _, v := range strArr {
+					if a.MatchString(string([]rune(v)[0:1])) {
+						c = randfill()
+					}
+					four.SetRGB255(c[0], c[1], c[2])
+					if ws >= 440 {
+						ws = 0
+						hs += 50
+					}
+					ws += DrawStringRec(four, v, "#FFFFFF", ws+5, 60+hs) + 15
+				}
 				dc.DrawImage(yingfour, 40, 1000)
 				dc.DrawImage(four.Image(), 40, 1000)
 			}
