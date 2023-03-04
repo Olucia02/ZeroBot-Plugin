@@ -1081,7 +1081,6 @@ func init() { // 主函数
 			ctx.SendChain(message.Text("Error:", err))
 			return
 		}
-		ctx.SendChain(message.Text(string(da)))
 		//解析
 		var gdate Damgroup
 		err = json.Unmarshal(da, &gdate)
