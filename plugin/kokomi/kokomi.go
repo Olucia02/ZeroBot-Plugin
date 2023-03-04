@@ -30,10 +30,10 @@ import (
 
 const (
 	//tu       = "https://api.yimian.xyz/img?type=moe&size=1920x1080"
-	NameFont = "plugin/kokomi/data/font/NZBZ.ttf"        // 名字字体
-	FontFile = "plugin/kokomi/data/font/sakura.ttf"      // 汉字字体
-	FiFile   = "plugin/kokomi/data/font/tttgbnumber.ttf" // 其余字体(数字英文)
-	BaFile   = "plugin/kokomi/data/font/STLITI.TTF"      // 华文隶书版本版本号字体
+	NameFont = "plugin/kokomi/data/font/NZBZ.ttf"                    // 名字字体
+	FontFile = "plugin/kokomi/data/font/SourceHanMonoSC-HeavyIt.ttf" // 汉字字体
+	FiFile   = "plugin/kokomi/data/font/tttgbnumber.ttf"             // 其余字体(数字英文)
+	BaFile   = "plugin/kokomi/data/font/STLITI.TTF"                  // 华文隶书版本版本号字体
 )
 
 func init() { // 主函数
@@ -1216,12 +1216,14 @@ func init() { // 主函数
 					panic(err)
 				}
 				three.SetRGB(1, 1, 1) //白色
-				three.DrawStringAnchored(gdate.Result.ZdlTips0, 250, 40, 0.5, 0)
-				if err := three.LoadFontFace(FontFile, 120); err != nil {
+				strArr := strings.Split(gdate.Result.ZdlTips0, "，")
+				three.DrawStringAnchored(strArr[0], 250, 30, 0.5, 0)
+				three.DrawStringAnchored(strArr[1], 250, 60, 0.5, 0)
+				if err := three.LoadFontFace(FiFile, 120); err != nil {
 					panic(err)
 				}
 				three.SetHexColor("#98F5FF")
-				three.DrawStringAnchored(fmt.Sprintln(gdate.Result.ZdlResult), 250, 160, 0.5, 0)
+				three.DrawStringAnchored(fmt.Sprint(gdate.Result.ZdlResult), 250, 180, 0.5, 0)
 				dc.DrawImage(yingthree, 40, 750)
 				dc.DrawImage(three.Image(), 40, 750)
 			}
@@ -1254,7 +1256,7 @@ func init() { // 主函数
 						ws = 0
 						hs += 50
 					}
-					ws += DrawStringRec(four, v, "#FFFFFF", ws+5, 60+hs) + 15
+					ws += DrawStringRec(four, v, "#FFFFFF", ws+5, 50+hs) + 15
 				}
 				dc.DrawImage(yingfour, 40, 1000)
 				dc.DrawImage(four.Image(), 40, 1000)

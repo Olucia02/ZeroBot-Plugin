@@ -75,10 +75,10 @@ func Yinying(x int, y int, r float64, c color.Color) image.Image {
 // 绘制带底色的字块,color为字体颜色,x,y左上角位置
 func DrawStringRec(dc *gg.Context, str, color string, x, y float64) (w float64) {
 	w, h := dc.MeasureString(str)
-	dc.DrawRoundedRectangle(x, y, w+8, h+5, 8)
+	dc.DrawRoundedRectangle(x, y, w+8, h+10, 8)
 	dc.Fill()
 	dc.SetHexColor(color)
-	dc.DrawString(str, x+3, h+y)
+	dc.DrawString(str, x+3, h+y+4)
 	return
 }
 
