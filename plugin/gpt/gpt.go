@@ -3,6 +3,7 @@ package chatgpt
 
 import (
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -28,7 +29,8 @@ func init() {
 		DisableOnDefault: true,
 		Brief:            "chatgpt",
 		Help: "// [对话内容]\n" +
-			"暂不支持上下文\n" +
+			"添加预设(x) xxx\n" +
+			"设置预设(x)\n" +
 			"(私聊发送)设置OpenAI apikey [apikey]",
 		PrivateDataFolder: "chatgpt",
 	})
@@ -40,7 +42,20 @@ func init() {
 		}
 		apiKey = string(apikey)
 	}
-	engine.OnRegex(`^//\s*(.*)$`, zero.OnlyToMe).SetBlock(true).
+	//初始化文件路径
+	if file.IsNotExist(engine.DataFolder() + "system") {
+		err := os.MkdirAll(engine.DataFolder()+"system", 0777)
+		if err != nil {
+			return
+		}
+	}
+	if file.IsNotExist(engine.DataFolder() + "group") {
+		err := os.MkdirAll(engine.DataFolder()+"group", 0777)
+		if err != nil {
+			return
+		}
+	}
+	engine.OnRegex(`^//\s*(.*)$`).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			if apiKey == "" {
 				ctx.SendChain(message.Text("未设置OpenAI apikey"))
@@ -51,12 +66,30 @@ func init() {
 				group: ctx.Event.GroupID,
 				user:  ctx.Event.UserID,
 			}
-			if args == "reset" {
+			if args == "重置记忆" {
 				cache.Delete(key)
 				ctx.SendChain(message.Text("已清除上下文！"))
 				return
 			}
-			messages := cache.Get(key)
+			//添加预设
+			var messages []chatMessage
+			num, err := os.ReadFile(engine.DataFolder() + "group/" + strconv.Itoa(int(key.group)) + ".txt")
+			if err == nil {
+				txt, err := os.ReadFile(engine.DataFolder() + "system/" + string(num) + ".txt")
+				if err != nil {
+					ctx.SendChain(message.Text("预设不存在!请重新设置预设"))
+					return
+				}
+				messages = append(messages, chatMessage{
+					Role:    "system",
+					Content: string(txt),
+				})
+				if len(cache.Get(key)) > 1 {
+					messages = append(messages, cache.Get(key)[1:]...)
+				}
+			} else {
+				messages = append(messages, cache.Get(key)...)
+			}
 			messages = append(messages, chatMessage{
 				Role:    "user",
 				Content: args,
@@ -87,4 +120,46 @@ func init() {
 		}
 		ctx.SendChain(message.Text("设置成功"))
 	})
+	engine.OnRegex(`^添加预设(\d)\s*(.*)$`, zero.SuperUserPermission).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			num := ctx.State["regex_matched"].([]string)[1]
+			word := ctx.State["regex_matched"].([]string)[2]
+			if word == "" {
+				return
+			}
+			file, err := os.OpenFile(engine.DataFolder()+"system/"+num+".txt", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+			if err != nil {
+				ctx.SendChain(message.Text("ERROR: ", err))
+				return
+			}
+			_, _ = file.WriteString(word)
+			file.Close()
+			ctx.SendChain(message.Text("设置成功"))
+		})
+	engine.OnRegex(`^设置预设(\d)$`).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			num := ctx.State["regex_matched"].([]string)[1]
+			group := strconv.Itoa(int(ctx.Event.GroupID))
+			file, err := os.OpenFile(engine.DataFolder()+"group/"+group+".txt", os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+			if err != nil {
+				ctx.SendChain(message.Text("ERROR: ", err))
+				return
+			}
+			_, _ = file.WriteString(num)
+			file.Close()
+			ctx.SendChain(message.Text("设置成功"))
+		})
+	engine.OnRegex(`^删除预设$`).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			group := strconv.Itoa(int(ctx.Event.GroupID))
+			err := os.Remove(engine.DataFolder() + "group/" + group + ".txt")
+			if err != nil {
+				//如果删除失败则输出 file remove Error!
+				ctx.SendChain(message.Text("未设置预设"))
+			} else {
+				//如果删除成功则输出 file remove OK!
+				ctx.SendChain(message.Text("删除成功"))
+			}
+			return
+		})
 }
