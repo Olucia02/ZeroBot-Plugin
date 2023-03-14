@@ -120,7 +120,7 @@ func init() {
 		}
 		ctx.SendChain(message.Text("设置成功"))
 	})
-	engine.OnRegex(`^添加预设\s*(\S+)\s*(.*)$`, zero.SuperUserPermission).SetBlock(true).
+	engine.OnRegex(`^添加预设\s*(\S+)\s+(.*)$`, zero.SuperUserPermission).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			num := ctx.State["regex_matched"].([]string)[1]
 			word := ctx.State["regex_matched"].([]string)[2]
