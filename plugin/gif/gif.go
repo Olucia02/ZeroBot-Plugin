@@ -863,7 +863,7 @@ func turn(cc *context, value ...string) (string, error) {
 	canvas.Fill()
 	turn := make([]*image.NRGBA, 36)
 	for i := 0; i < 36; i++ {
-		turn[i] = imgfactory.Size(canvas.Image(), 0, 0).InsertUpC(imgfactory.Rotate(face, float64(10*i), 250, 250).Image(), 0, 0, 125, 125).Image()
+		turn[i] = imgfactory.Size(canvas.Image(), 0, 0).InsertUpC(imgfactory.Rotate(face, float64(10*i), 250, 250).Image(), 0, 0, 125-imgfactory.Rotate(face, float64(10*i), 250, 250).Image().Rect.Size().X/2, 125-imgfactory.Rotate(face, float64(10*i), 250, 250).Image().Rect.Size().Y/2).Image()
 	}
 	return "file:///" + name, imgfactory.SaveGIF2Path(name, imgfactory.MergeGif(7, turn))
 }
