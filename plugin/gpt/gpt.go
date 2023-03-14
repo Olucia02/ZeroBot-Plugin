@@ -3,6 +3,7 @@ package chatgpt
 
 import (
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -26,11 +27,11 @@ var cache = ttl.NewCache[sessionKey, []chatMessage](time.Minute * 15)
 
 func init() {
 	engine := control.Register("chatgpt", &ctrl.Options[*zero.Ctx]{
-		DisableOnDefault: true,
+		DisableOnDefault: false,
 		Brief:            "chatgpt",
-		Help: "// [对话内容]\n" +
-			"添加预设(x) xxx\n" +
-			"设置预设(x)\n" +
+		Help: "-@bot chatgpt [对话内容]\n" +
+			"添加预设(0-9) xxx\n" +
+			"设置预设(0-9)\n" +
 			"(私聊发送)设置OpenAI apikey [apikey]",
 		PrivateDataFolder: "chatgpt",
 	})
@@ -55,7 +56,7 @@ func init() {
 			return
 		}
 	}
-	engine.OnRegex(`^//\s*(.*)$`).SetBlock(true).
+	engine.OnRegex(`^(?:chatgpt|//)\s*(.*)$`, zero.OnlyToMe).SetBlock(true).
 		Handle(func(ctx *zero.Ctx) {
 			if apiKey == "" {
 				ctx.SendChain(message.Text("未设置OpenAI apikey"))
@@ -66,7 +67,7 @@ func init() {
 				group: ctx.Event.GroupID,
 				user:  ctx.Event.UserID,
 			}
-			if args == "重置记忆" {
+			if args == "reset" || args == "重置记忆" {
 				cache.Delete(key)
 				ctx.SendChain(message.Text("已清除上下文！"))
 				return
@@ -160,5 +161,22 @@ func init() {
 				//如果删除成功则输出 file remove OK!
 				ctx.SendChain(message.Text("删除成功"))
 			}
+		})
+	engine.OnRegex(`^查看预设列表$`).SetBlock(true).
+		Handle(func(ctx *zero.Ctx) {
+			var buff strings.Builder
+			buff.WriteString("当前拥有预设:")
+			err := filepath.Walk(engine.DataFolder()+"system", func(path string, info os.FileInfo, err error) error {
+				if !info.IsDir() {
+					buff.WriteByte('\n')
+					buff.WriteString(info.Name())
+				}
+				return nil
+			})
+			if err != nil {
+				ctx.SendChain(message.Text("Error:", err))
+				return
+			}
+			ctx.SendChain(message.Text(buff.String()))
 		})
 }
