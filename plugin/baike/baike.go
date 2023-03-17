@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	api = "http://ovooa.com/API/bdbk/?Msg=%v" // api地址
+	api = "http://ovooa.caonm.net/API/bdbk/?Msg=%v" // api地址
 
 )
 
