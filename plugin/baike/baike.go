@@ -4,6 +4,7 @@ package baike
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/FloatTech/floatbox/web"
 	ctrl "github.com/FloatTech/zbpctrl"
@@ -14,7 +15,7 @@ import (
 
 const (
 	baidu = "http://ovooa.caonm.net/API/bdbk/?Msg=%s" // api地址
-	weiji = "https://api.a20safe.com/api.php?api=23&key=7d06a110e9e20a684e02934549db1d3d&text=%s"
+	weiji = "http://asoiaf.huijiwiki.com/api.php?action=query&format=json&formatversion=2&list=search&srsearch=%s&srnamespace=0&srlimit=%s"
 )
 
 type ba struct {
@@ -28,11 +29,24 @@ type ba struct {
 	} `json:"data"`
 }
 type we struct {
-	Code int    `json:"code"`
-	Msg  string `json:"msg"`
-	Data []struct {
-		Content string `json:"content"`
-	} `json:"data"`
+	Batchcomplete bool `json:"batchcomplete"`
+	Continue      struct {
+		Sroffset int    `json:"sroffset"`
+		Continue string `json:"continue"`
+	} `json:"continue"`
+	Query struct {
+		Searchinfo struct {
+			Totalhits int `json:"totalhits"`
+		} `json:"searchinfo"`
+		Search []struct {
+			Ns        int    `json:"ns"`
+			Title     string `json:"title"`
+			Pageid    int    `json:"pageid"`
+			Size      int    `json:"size"`
+			Wordcount int    `json:"wordcount"`
+			Snippet   string `json:"snippet"`
+		} `json:"search"`
+	} `json:"query"`
 }
 
 func init() { // 主函数
@@ -58,8 +72,12 @@ func init() { // 主函数
 			ctx.SendChain(message.Text(r.Text))
 		}
 	})
-	en.OnRegex(`^维基\s*(.+)$`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
-		es, err := web.GetData(fmt.Sprintf(weiji, ctx.State["regex_matched"].([]string)[1])) // 将网站返回结果赋值
+	en.OnRegex(`^维基\s*(\S+)\s*(\d+)?$`).SetBlock(true).Handle(func(ctx *zero.Ctx) {
+		fig := ctx.State["regex_matched"].([]string)[2]
+		if fig == "" {
+			fig = "1"
+		}
+		es, err := web.GetData(fmt.Sprintf(weiji, ctx.State["regex_matched"].([]string)[1], fig)) // 将网站返回结果赋值
 		if err != nil {
 			ctx.SendChain(message.Text("出现错误捏：", err))
 		}
@@ -68,10 +86,16 @@ func init() { // 主函数
 		if err != nil {
 			ctx.SendChain(message.Text("出现错误捏：", err))
 		}
-		if r.Code == 0 {
-			ctx.SendChain(message.Text(r.Data[0].Content)) // 输出提取后的结果
+		if len(r.Query.Search) > 0 {
+			ctx.SendChain(message.Text(r.Query.Search[func(fig string) int {
+				f, _ := strconv.Atoi(fig)
+				return f
+			}(fig)].Title, "\n", r.Query.Search[func(fig string) int {
+				f, _ := strconv.Atoi(fig)
+				return f
+			}(fig)].Snippet)) // 输出提取后的结果
 		} else {
-			ctx.SendChain(message.Text(r.Msg))
+			ctx.SendChain(message.Text("维基百科未找到信息"))
 		}
 	})
 }
